@@ -1,9 +1,9 @@
-import React, {useState} from "react";
+import React, {ChangeEvent, ChangeEventHandler, useState,KeyboardEvent} from "react";
 import s from './TodoList.module.css'
 import {filterType} from "./App";
 
 type TaskType = {
-    id: number //для идентификации конкретной таски, когда их много
+    id: string //для идентификации конкретной таски, когда их много
     title: string
     isDone: boolean
 }
@@ -11,37 +11,42 @@ type TaskType = {
 type TodoListPropsType = {
     title: string
     tasks: Array<TaskType>
-     removeTask: (mId: number) => void//функция удаления
-    // setFilter: (value: filterType) => void //void-потому что функция ничего не возращает,без return
+     removeTask: (mId: string) => void//функция удаления
+    setFilter: (value: filterType) => void //void-потому что функция ничего не возращает,без return
+    addTask:(title:string)=>void //функция добавления в инпут
 }
 
 export function TodoList(props: TodoListPropsType) {
+    const[title,setTitle]=useState<string>(' '); //локальный useState для предварительного пользовательского ввода в инпут.
+    //по умолчанию пустая сторока
 
-    const [filterValue, setFilterValue] = useState<filterType>('All') //all-по умолчанию
-
-    // фильтр для кнопок
-    let isDoneTrue = props.tasks
-    if (filterValue === 'Active') {
-        isDoneTrue = isDoneTrue.filter(f => f.isDone);
+    const onChangeHandler=(event:ChangeEvent<HTMLInputElement>)=>{
+       setTitle(event.currentTarget.value) }
+       const addTitle=()=> {
+           props.addTask(title)
+           setTitle(' ')
     }
-    if (filterValue === 'Completed') {
-        isDoneTrue= isDoneTrue.filter(f => !f.isDone);
-    }
-    //принимает значение value от кнопок
-    const filteredTasks = (value: filterType) => {  //принимаем от кнопки value (например'all')
-        setFilterValue(value);
-    }
-
-
+    const keyPress=(event:KeyboardEvent<HTMLInputElement>)=>{
+        if(event.key==='Enter'){
+            addTitle()
+        }}
+    const onClickSetAllFilter=() => props.setFilter('All');
+    const onClickSetActiveFilter=() => props.setFilter('Active');
+    const onClickSetCompletedFilter=() => props.setFilter('Completed')
     return (
         <div>
             <h3>{props.title}</h3>
-            <div>setTasks
-                <input/>
-                <button>+</button>
+            <div>
+                <input
+                    value={title}
+                    onChange={onChangeHandler}
+                    onKeyPress={keyPress}
+                />
+                {/*передаем функцию-коллбэк:*/}
+                <button onClick={addTitle}>+</button>
             </div>
             <ul>{/* потому что в эту ul мы передаем array => tasks*/}
-                {isDoneTrue.map((m => {
+                {props.tasks.map((m => {
                     return (
                         <li key={m.id}><input type="checkbox" checked={m.isDone}/> <span>{m.title}</span>
                             <button onClick={() => props.removeTask(m.id)}
@@ -52,10 +57,10 @@ export function TodoList(props: TodoListPropsType) {
                 }))}
             </ul>
             <div>
-                <button onClick={() => filteredTasks('All')}>All</button>
+                <button onClick={onClickSetAllFilter}>All</button>
                 {/*через параметр мы передаем строку -идентификатор кнопки*/}
-                <button onClick={() => filteredTasks('Active')}>Active</button>
-                <button onClick={() => filteredTasks('Completed')}>Completed</button>
+                <button onClick={onClickSetActiveFilter}>Active</button>
+                <button onClick={onClickSetCompletedFilter}>Completed</button>
             </div>
         </div>
 
