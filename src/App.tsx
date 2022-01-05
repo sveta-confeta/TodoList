@@ -31,9 +31,10 @@ function App() {
         setTasks(tasks.filter(f => f.id !== mId)) //функция удаления которая будет привязана к кнопке и ее надо через
         //пропс поместить в туду лист
     }
+
+
     //hook
     const [filterValue, setFilterValue] = useState<filterType>('All') //all-по умолчанию
-
 
     // фильтр для кнопок
     let isDoneTrue = tasks;
@@ -44,10 +45,18 @@ function App() {
     if (filterValue === 'Completed') {
         isDoneTrue = tasks.filter(f => !f.isDone);
     }
-    //принимает значение value от кнопок
+    // функция фильтрации кнопок: принимает значение value от кнопок
     const filteredTasks = (value: filterType) => {  //принимаем от кнопки value (например'all')
         setFilterValue(value);
     }
+
+
+
+
+    const changeTaskStatus=(id:string, newIsDoneValue:boolean)=>{
+
+      setTasks(tasks.map(t=> t.id===id ? {...t ,isDone: newIsDoneValue} : t))
+    };  //функция управления чекбоксом вкл и выкл
 
 
     return (
@@ -58,6 +67,8 @@ function App() {
                 removeTask={removeTask} //перебрасываем в тудулист функция удаления
                 setFilter={filteredTasks} //передаем функцию и не забываем типизаровать в тудулисте
                 addTask={addTask}
+                changeTaskStatus={changeTaskStatus}
+                filter={filterValue} //для навешивания css классов кнопкам
             />
 
         </div>

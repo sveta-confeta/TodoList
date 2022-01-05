@@ -1,6 +1,7 @@
-import React, {ChangeEvent, ChangeEventHandler, useState,KeyboardEvent} from "react";
+import React, {ChangeEvent, ChangeEventHandler, useState, KeyboardEvent} from "react";
 import s from './TodoList.module.css'
 import {filterType} from "./App";
+import {Button} from "./components/Button";
 
 type TaskType = {
     id: string //для идентификации конкретной таски, когда их много
@@ -11,56 +12,79 @@ type TaskType = {
 type TodoListPropsType = {
     title: string
     tasks: Array<TaskType>
-     removeTask: (mId: string) => void//функция удаления
+    removeTask: (mId: string) => void//функция удаления
     setFilter: (value: filterType) => void //void-потому что функция ничего не возращает,без return
-    addTask:(title:string)=>void //функция добавления в инпут
+    addTask: (title: string) => void //функция добавления в инпут
+    changeTaskStatus: (id: string, newIsDoneValue: boolean) => void
+    filter: filterType;
 }
 
 export function TodoList(props: TodoListPropsType) {
-    const[title,setTitle]=useState<string>(' '); //локальный useState для предварительного пользовательского ввода в инпут.
+    const [title, setTitle] = useState<string>(' '); //локальный useState для предварительного пользовательского ввода в инпут.
     //по умолчанию пустая сторока
 
-    const onChangeHandler=(event:ChangeEvent<HTMLInputElement>)=>{
-       setTitle(event.currentTarget.value) }
-       const addTitle=()=> {
-           props.addTask(title)
-           setTitle(' ')
+    const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {  //функция для инпута
+        setTitle(event.currentTarget.value)
     }
-    const keyPress=(event:KeyboardEvent<HTMLInputElement>)=>{
-        if(event.key==='Enter'){
+
+    const addTitle = () => {
+        const trimmedTitle = title.trim();
+        if (trimmedTitle) {
+            props.addTask(trimmedTitle)
+        }
+        setTitle(' ') //функция очистки инпут
+    }
+    const keyPress = (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
             addTitle()
-        }}
-    const onClickSetAllFilter=() => props.setFilter('All');
-    const onClickSetActiveFilter=() => props.setFilter('Active');
-    const onClickSetCompletedFilter=() => props.setFilter('Completed')
+        }
+    }
+    //2 вариант:
+    const topSet=(filter:filterType)=>{ //app.tsx:type filterType = 'All' | 'Active' | 'Completed' //типизация фильтра для кнопок
+        props.setFilter(filter);
+    }
+    const removeTaskHandler=(tID:string) => props.removeTask(tID);
+
+
     return (
         <div>
             <h3>{props.title}</h3>
             <div>
                 <input
                     value={title}
-                    onChange={onChangeHandler}
+                    onChange={onChangeHandler}  //!!!!!инпут сдесь
                     onKeyPress={keyPress}
                 />
                 {/*передаем функцию-коллбэк:*/}
-                <button onClick={addTitle}>+</button>
+                {/*<button onClick={addTitle}>+</button>*/}
+                <Button name={'+'} callback={addTitle}/>
             </div>
             <ul>{/* потому что в эту ul мы передаем array => tasks*/}
                 {props.tasks.map((m => {
+                     const changeStatus=(e:ChangeEvent<HTMLInputElement>)=>props.changeTaskStatus(m.id,e.currentTarget.checked);
                     return (
-                        <li key={m.id}><input type="checkbox" checked={m.isDone}/> <span>{m.title}</span>
-                            <button onClick={() => props.removeTask(m.id)}
-                                    className={s.btn}>x
-                            </button>
+                        <li key={m.id} className={m.isDone ? "is-done" : ''}>
+                            <input type="checkbox"
+                                   checked={m.isDone}
+                            onChange={changeStatus}
+                            /> <span>{m.title}</span>
+                            <Button name={'x'} callback={()=>removeTaskHandler(m.id)}/>
+
                         </li>
                     )
                 }))}
             </ul>
             <div>
-                <button onClick={onClickSetAllFilter}>All</button>
-                {/*через параметр мы передаем строку -идентификатор кнопки*/}
-                <button onClick={onClickSetActiveFilter}>Active</button>
-                <button onClick={onClickSetCompletedFilter}>Completed</button>
+                <Button name={'All'} callback={()=>topSet('All')}/>
+                <Button name={'Active'} callback={()=>topSet('Active')}/>
+                <Button name={'Completed'} callback={()=>topSet('Completed')}/>
+
+                {/*        2 вариант:*/}
+                {/*<button onClick={()=>topSet('All')} className={props.filter==='All' ? 'active-filter': ''}>All</button>*/}
+                {/*/!*через параметр мы передаем строку -идентификатор кнопки*!/*/}
+                {/*<button onClick={()=>topSet('Active')} className={props.filter==='Active' ? 'active-filter': ''}>Active</button>*/}
+                {/*<button onClick={()=>topSet('Completed')}  className={props.filter==='Completed' ? 'active-filter': ''}>Completed</button>*/}
+
             </div>
         </div>
 
