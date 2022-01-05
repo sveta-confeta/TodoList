@@ -2,6 +2,7 @@ import React, {ChangeEvent, ChangeEventHandler, useState, KeyboardEvent} from "r
 import s from './TodoList.module.css'
 import {filterType} from "./App";
 import {Button} from "./components/Button";
+import {Input} from "./components/Input";
 
 type TaskType = {
     id: string //для идентификации конкретной таски, когда их много
@@ -20,44 +21,51 @@ type TodoListPropsType = {
 }
 
 export function TodoList(props: TodoListPropsType) {
-    const [title, setTitle] = useState<string>(' '); //локальный useState для предварительного пользовательского ввода в инпут.
-    //по умолчанию пустая сторока
+    // const [title, setTitle] = useState<string>(' '); //локальный useState для предварительного пользовательского ввода в инпут.
+    // //по умолчанию пустая сторока
 
-    const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {  //функция для инпута
-        setTitle(event.currentTarget.value)
-    }
+    // const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {  //функция для инпута
+    //     setTitle(event.currentTarget.value)
+    // }
 
-    const addTitle = () => {
+    const addTask= () => {
         const trimmedTitle = title.trim();
         if (trimmedTitle) {
             props.addTask(trimmedTitle)
         }
         setTitle(' ') //функция очистки инпут
     }
-    const keyPress = (event: KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter') {
-            addTitle()
-        }
-    }
-    //2 вариант:
+    // const keyPress = (event: KeyboardEvent<HTMLInputElement>) => {
+    //     if (event.key === 'Enter') {
+    //         addTitle()
+    //     }
+    // }
+    const [title, setTitle] = useState<string>(' '); //локальный useState для предварительного пользовательского ввода в инпут.
+    //по умолчанию пустая сторока
+
     const topSet=(filter:filterType)=>{ //app.tsx:type filterType = 'All' | 'Active' | 'Completed' //типизация фильтра для кнопок
         props.setFilter(filter);
     }
     const removeTaskHandler=(tID:string) => props.removeTask(tID);
+
+    const blockButton=()=>{
+        props.addTask(title);
+    }
 
 
     return (
         <div>
             <h3>{props.title}</h3>
             <div>
-                <input
-                    value={title}
-                    onChange={onChangeHandler}  //!!!!!инпут сдесь
-                    onKeyPress={keyPress}
-                />
-                {/*передаем функцию-коллбэк:*/}
-                {/*<button onClick={addTitle}>+</button>*/}
-                <Button name={'+'} callback={addTitle}/>
+                <Input setTitle={setTitle} title={title}/>
+                {/*<input*/}
+                {/*    value={title}*/}
+                {/*    onChange={onChangeHandler}  //!!!!!инпут сдесь*/}
+                {/*    onKeyPress={keyPress}*/}
+                {/*/>*/}
+                {/*/!*передаем функцию-коллбэк:*!/*/}
+                {/*/!*<button onClick={addTitle}>+</button>*!/*/}
+                <Button name={'+'} callback={blockButton}/>
             </div>
             <ul>{/* потому что в эту ul мы передаем array => tasks*/}
                 {props.tasks.map((m => {
