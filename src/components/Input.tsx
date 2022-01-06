@@ -1,8 +1,10 @@
 import React, {ChangeEvent, KeyboardEvent} from 'react';
+import s from '../TodoList.module.css'
 
 type InputPropsType={
     setTitle:(title:string)=>void
     title:string
+    addTask:(title:string)=>void
 }
 
 export const Input = (props:InputPropsType) => {
@@ -10,16 +12,21 @@ export const Input = (props:InputPropsType) => {
         props.setTitle(event.currentTarget.value)
     }
     const keyPress = (event: KeyboardEvent<HTMLInputElement>) => {
-        // if (event.key === 'Enter') {
-        //     addTitle()
-        // }
+        if (event.key === 'Enter') {
+            const trimmedTitle = props.title.trim();
+            if (trimmedTitle) {
+                props.addTask(trimmedTitle)
+            }
+            props.setTitle( '')
+        }
     }
     return (
         <>
             <input
                 value={props.title}
-                onChange={onChangeHandler}  //!!!!!инпут сдесь
+                onChange={onChangeHandler}
                 onKeyPress={keyPress}
+                className={s.error}
             />
             </>
     );

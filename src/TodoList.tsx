@@ -1,8 +1,8 @@
-import React, {ChangeEvent, ChangeEventHandler, useState, KeyboardEvent} from "react";
-import s from './TodoList.module.css'
+import React, {ChangeEvent, ChangeEventHandler, useState, KeyboardEvent } from "react";
 import {filterType} from "./App";
 import {Button} from "./components/Button";
 import {Input} from "./components/Input";
+import s from './TodoList.module.css'
 
 type TaskType = {
     id: string //для идентификации конкретной таски, когда их много
@@ -21,20 +21,17 @@ type TodoListPropsType = {
 }
 
 export function TodoList(props: TodoListPropsType) {
-    // const [title, setTitle] = useState<string>(' '); //локальный useState для предварительного пользовательского ввода в инпут.
-    // //по умолчанию пустая сторока
 
     // const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {  //функция для инпута
     //     setTitle(event.currentTarget.value)
     // }
 
-    const addTask= () => {
-        const trimmedTitle = title.trim();
-        if (trimmedTitle) {
-            props.addTask(trimmedTitle)
-        }
-        setTitle(' ') //функция очистки инпут
-    }
+    // const addTask= () => {
+    //     const trimmedTitle = title.trim();
+    //     if (trimmedTitle) {
+    //         props.addTask(trimmedTitle)
+    //     }
+    // }
     // const keyPress = (event: KeyboardEvent<HTMLInputElement>) => {
     //     if (event.key === 'Enter') {
     //         addTitle()
@@ -49,7 +46,8 @@ export function TodoList(props: TodoListPropsType) {
     const removeTaskHandler=(tID:string) => props.removeTask(tID);
 
     const blockButton=()=>{
-        props.addTask(title);
+       props.addTask(title );
+        setTitle(' ');
     }
 
 
@@ -57,7 +55,7 @@ export function TodoList(props: TodoListPropsType) {
         <div>
             <h3>{props.title}</h3>
             <div>
-                <Input setTitle={setTitle} title={title}/>
+                <Input setTitle={setTitle} title={title} addTask={props.addTask}/>
                 {/*<input*/}
                 {/*    value={title}*/}
                 {/*    onChange={onChangeHandler}  //!!!!!инпут сдесь*/}
@@ -66,6 +64,7 @@ export function TodoList(props: TodoListPropsType) {
                 {/*/!*передаем функцию-коллбэк:*!/*/}
                 {/*/!*<button onClick={addTitle}>+</button>*!/*/}
                 <Button name={'+'} callback={blockButton}/>
+                <div className={s.errorMessages}>Title is requires</div>
             </div>
             <ul>{/* потому что в эту ul мы передаем array => tasks*/}
                 {props.tasks.map((m => {
