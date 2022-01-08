@@ -1,4 +1,4 @@
-import React, {ChangeEvent, KeyboardEvent} from 'react';
+import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
 import s from '../TodoList.module.css'
 
 type InputPropsType={
@@ -8,6 +8,10 @@ type InputPropsType={
 }
 
 export const Input = (props:InputPropsType) => {
+    let[error,setError]=useState(true); //хук для бордера инпута красный-не красный
+
+
+
     const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {  //функция для инпута
         props.setTitle(event.currentTarget.value)
     }

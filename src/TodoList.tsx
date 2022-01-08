@@ -46,8 +46,8 @@ export function TodoList(props: TodoListPropsType) {
     const removeTaskHandler=(tID:string) => props.removeTask(tID);
 
     const blockButton=()=>{
-       props.addTask(title );
-        setTitle(' ');
+       props.addTask(title);
+        // setTitle(' ');
     }
 
 
