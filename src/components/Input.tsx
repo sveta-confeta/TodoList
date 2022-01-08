@@ -30,7 +30,7 @@ export const Input = (props:InputPropsType) => {
                 value={props.title}
                 onChange={onChangeHandler}
                 onKeyPress={keyPress}
-                className={s.error}
+                className={error ? s.error:' '}
             />
             </>
     );
