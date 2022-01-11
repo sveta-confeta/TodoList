@@ -5,14 +5,17 @@ type InputPropsType={
     setTitle:(title:string)=>void
     title:string
     addTask:(title:string)=>void
+    error:boolean
+    setError:(value:boolean)=>void
 }
 
 export const Input = (props:InputPropsType) => {
-    let[error,setError]=useState(true); //хук для бордера инпута красный-не красный
+
 
 
 
     const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {  //функция для инпута
+        props.setError(false);
         props.setTitle(event.currentTarget.value)
     }
     const keyPress = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -20,8 +23,11 @@ export const Input = (props:InputPropsType) => {
             const trimmedTitle = props.title.trim();
             if (trimmedTitle) {
                 props.addTask(trimmedTitle)
+                props.setTitle( '')
+            }else{
+                props.setError(true);
             }
-            props.setTitle( '')
+
         }
     }
     return (
@@ -30,7 +36,7 @@ export const Input = (props:InputPropsType) => {
                 value={props.title}
                 onChange={onChangeHandler}
                 onKeyPress={keyPress}
-                className={error ? s.error:' '}
+                className={props.error ? s.error :' '}
             />
             </>
     );

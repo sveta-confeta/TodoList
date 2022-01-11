@@ -69,6 +69,7 @@ function App() {
                 addTask={addTask}
                 changeTaskStatus={changeTaskStatus}
                 filter={filterValue} //для навешивания css классов кнопкам
+                filteredTasks={filteredTasks}
             />
 
         </div>
