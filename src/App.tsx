@@ -4,26 +4,34 @@ import {TodoList} from "./TodoList";
 import {v1} from "uuid";
 
 export type filterType = 'All' | 'Active' | 'Completed' //типизация фильтра для кнопок
-
+type TodilistsType = {
+    id: string,
+    title: string,
+    filter: filterType;
+}
 
 function App() {
+    let [todolists, setTodolists] = useState<Array<TodilistsType>>([  //чтоб происходила перерисовка видоизмененных данных
+        {id: v1(), title: 'What to Learn', filter: 'All'},//use state принимает данные и возращает массив
+        {id: v1(), title: 'What to read', filter: 'Active'},]);
     //BLL
-    const todoListTitle: string = 'What to Learn';
+
 
     //hook
     let [tasks, setTasks] = useState([ //чтоб происходила перерисовка видоизмененных данных
         {id: v1(), title: 'НTML', isDone: true},//use state принимает данные и возращает массив
-        {id:  v1(), title: 'CSS', isDone: true},
-        {id:  v1(), title: 'JS/TS', isDone: true},
-        {id:  v1(), title: 'CSS', isDone: false},
-        {id:  v1(), title: 'JS/TS', isDone: false},
+        {id: v1(), title: 'CSS', isDone: true},
+        {id: v1(), title: 'JS/TS', isDone: true},
+        {id: v1(), title: 'CSS', isDone: false},
+        {id: v1(), title: 'JS/TS', isDone: false},
         {id: v1(), title: 'CSS', isDone: true},
         {id: v1(), title: 'JS/TS', isDone: true},
     ]);
 
+
     //функция-колбэк для кнопки добавления задач в инпут:
-    const addTask=(title:string)=>{
-        setTasks([ {id: v1(), title: title, isDone: true},...tasks])
+    const addTask = (title: string) => {
+        setTasks([{id: v1(), title: title, isDone: true}, ...tasks])
     }
 
     // функция для кнопки удаления
@@ -33,44 +41,42 @@ function App() {
     }
 
 
-    //hook
-    const [filterValue, setFilterValue] = useState<filterType>('All') //all-по умолчанию
-
-    // фильтр для кнопок
-    let isDoneTrue = tasks;
-    if (filterValue === 'Active') {
-        isDoneTrue = tasks.filter(f => f.isDone);
-    }
-
-    if (filterValue === 'Completed') {
-        isDoneTrue = tasks.filter(f => !f.isDone);
-    }
-    // функция фильтрации кнопок: принимает значение value от кнопок
-    const filteredTasks = (value: filterType) => {  //принимаем от кнопки value (например'all')
-        setFilterValue(value);
-    }
+    //функция фильтрации кнопок: принимает значение value от кнопок
+    const filteredTask = (todolistID:string,value: filterType) => {  //принимаем от кнопки value (например'all')
+            // setFilterValue(value);
+        }
 
 
+    const changeTaskStatus = (id: string, newIsDoneValue: boolean) => {
 
-
-    const changeTaskStatus=(id:string, newIsDoneValue:boolean)=>{
-
-      setTasks(tasks.map(t=> t.id===id ? {...t ,isDone: newIsDoneValue} : t))
+        setTasks(tasks.map(t => t.id === id ? {...t, isDone: newIsDoneValue} : t))
     };  //функция управления чекбоксом вкл и выкл
 
 
     return (
         <div className="App">
-            <TodoList
-                title={todoListTitle}
-                tasks={isDoneTrue}
-                removeTask={removeTask} //перебрасываем в тудулист функция удаления
-                setFilter={filteredTasks} //передаем функцию и не забываем типизаровать в тудулисте
-                addTask={addTask}
-                changeTaskStatus={changeTaskStatus}
-                filter={filterValue} //для навешивания css классов кнопкам
-                filteredTasks={filteredTasks}
-            />
+            {todolists.map(m => {
+                if (m.filter === 'Active') {
+                   tasks = tasks.filter(f => f.isDone);
+                }
+
+                if (m.filter === 'Completed') {
+                   tasks = tasks.filter(f => !f.isDone);
+                }
+                return (
+                    <TodoList
+                        todolistID={m.id} //если красная надо типизировать v todolist.tsx
+                        title={m.title}
+                        tasks={tasks}
+                        removeTask={removeTask} //перебрасываем в тудулист функция удаления
+                        setFilter={filteredTask} //передаем функцию и не забываем типизаровать в тудулисте
+                        addTask={addTask}
+                        changeTaskStatus={changeTaskStatus}
+                        filter={m.filter} //для навешивания css классов кнопкам
+                        filteredTasks={filteredTask}
+                    />
+                )
+            })}
 
         </div>
     );

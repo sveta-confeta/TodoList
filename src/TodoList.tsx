@@ -11,14 +11,15 @@ type TaskType = {
 }
 
 type TodoListPropsType = {
+    todolistID:string
     title: string
     tasks: Array<TaskType>
     removeTask: (mId: string) => void//функция удаления
-    setFilter: (value: filterType) => void //void-потому что функция ничего не возращает,без return
+    setFilter: (id:string,value: filterType) => void //void-потому что функция ничего не возращает,без return
     addTask: (title: string) => void //функция добавления в инпут
     changeTaskStatus: (id: string, newIsDoneValue: boolean) => void
     filter: filterType;
-    filteredTasks:(value:filterType)=>void
+    filteredTasks:(id:string,value:filterType,)=>void
 }
 
 export function TodoList(props: TodoListPropsType) {
