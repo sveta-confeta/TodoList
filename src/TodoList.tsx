@@ -17,7 +17,7 @@ type TodoListPropsType = {
     removeTask: (mId: string) => void//функция удаления
     setFilter: (id:string,value: filterType) => void //void-потому что функция ничего не возращает,без return
     addTask: (title: string) => void //функция добавления в инпут
-    changeTaskStatus: (id: string, newIsDoneValue: boolean) => void
+    changeTaskStatus: (id: string,newIsDoneValue: boolean) => void
     filter: filterType;
     filteredTasks:(id:string,value:filterType,)=>void
 }
@@ -44,7 +44,7 @@ export function TodoList(props: TodoListPropsType) {
     let [error, setError] = useState(false); //хук для бордера инпута красный-не красный
 
     const topSet = (value: filterType) => { //app.tsx:type filterType = 'All' | 'Active' | 'Completed' //типизация фильтра для кнопок
-        props.filteredTasks(value);
+        props.filteredTasks(props.todolistID,value);
     }
     const removeTaskHandler = (tID: string) => props.removeTask(tID);
 

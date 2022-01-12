@@ -13,7 +13,7 @@ type TodilistsType = {
 function App() {
     let [todolists, setTodolists] = useState<Array<TodilistsType>>([  //чтоб происходила перерисовка видоизмененных данных
         {id: v1(), title: 'What to Learn', filter: 'All'},//use state принимает данные и возращает массив
-        {id: v1(), title: 'What to read', filter: 'Active'},]);
+        {id: v1(), title: 'What to read', filter: 'All'},]);
     //BLL
 
 
@@ -43,12 +43,11 @@ function App() {
 
     //функция фильтрации кнопок: принимает значение value от кнопок
     const filteredTask = (todolistID:string,value: filterType) => {  //принимаем от кнопки value (например'all')
-            // setFilterValue(value);
+        setTodolists(todolists.map(m=> todolistID===m.id ? {...m,filter:value}: m));
         }
 
 
     const changeTaskStatus = (id: string, newIsDoneValue: boolean) => {
-
         setTasks(tasks.map(t => t.id === id ? {...t, isDone: newIsDoneValue} : t))
     };  //функция управления чекбоксом вкл и выкл
 
@@ -65,6 +64,7 @@ function App() {
                 }
                 return (
                     <TodoList
+                        key={m.id}
                         todolistID={m.id} //если красная надо типизировать v todolist.tsx
                         title={m.title}
                         tasks={tasks}
