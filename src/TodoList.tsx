@@ -4,20 +4,24 @@ import {Button} from "./components/Button";
 import {Input} from "./components/Input";
 import s from './TodoList.module.css'
 
-type TaskType = {
+export type TaskType = {
     id: string //для идентификации конкретной таски, когда их много
     title: string
     isDone: boolean
+}
+export type TasksType={
+    [key:string]:Array<TaskType>
+
 }
 
 type TodoListPropsType = {
     todolistID:string
     title: string
-    tasks: Array<TaskType>
-    removeTask: (mId: string) => void//функция удаления
+    tasks:Array<TaskType>
+    removeTask: (mID: string,todolistID:string) => void//функция удаления
     setFilter: (id:string,value: filterType) => void //void-потому что функция ничего не возращает,без return
-    addTask: (title: string) => void //функция добавления в инпут
-    changeTaskStatus: (id: string,newIsDoneValue: boolean) => void
+    addTask: (title: string,todolistID:string) => void //функция добавления в инпут
+    changeTaskStatus: (id: string,newIsDoneValue: boolean,todolistID:string) => void
     filter: filterType;
     filteredTasks:(id:string,value:filterType,)=>void
 }
@@ -46,7 +50,7 @@ export function TodoList(props: TodoListPropsType) {
     const topSet = (value: filterType) => { //app.tsx:type filterType = 'All' | 'Active' | 'Completed' //типизация фильтра для кнопок
         props.filteredTasks(props.todolistID,value);
     }
-    const removeTaskHandler = (tID: string) => props.removeTask(tID);
+    const removeTaskHandler = (tID: string) => props.removeTask(tID,props.todolistID);
 
     const blockButton = () => {
         addTaskButton()
@@ -54,21 +58,21 @@ export function TodoList(props: TodoListPropsType) {
     const addTaskButton = () => {
         const trimmedTitle = title.trim();
         if (trimmedTitle) {
-            props.addTask(trimmedTitle)
+            props.addTask(trimmedTitle,props.todolistID)
             setTitle('')
         } else {
             setError(true);
         }
 
     }
-    const changeStatus = (mId: string, value: boolean) => props.changeTaskStatus(mId, value);
+    const changeStatus = (mId: string, value: boolean) => props.changeTaskStatus(mId, value,props.todolistID);
 
 
     return (
         <div>
             <h3>{props.title}</h3>
             <div>
-                <Input setTitle={setTitle} title={title} addTask={props.addTask} error={error} setError={setError}/>
+                <Input setTitle={setTitle} title={title} addTask={props.addTask} error={error} setError={setError} todolistID={props.todolistID}/>
                 {/*<input*/}
                 {/*    value={title}*/}
                 {/*    onChange={onChangeHandler}  //!!!!!инпут сдесь*/}

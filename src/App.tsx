@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import {TodoList} from "./TodoList";
 import {v1} from "uuid";
+import {TaskType} from "./TodoList";
 
 export type filterType = 'All' | 'Active' | 'Completed' //типизация фильтра для кнопок
 type TodilistsType = {
@@ -11,72 +12,110 @@ type TodilistsType = {
 }
 
 function App() {
+
+    const todolistID_1 = v1();
+    const todolistID_2 = v1();
     let [todolists, setTodolists] = useState<Array<TodilistsType>>([  //чтоб происходила перерисовка видоизмененных данных
-        {id: v1(), title: 'What to Learn', filter: 'All'},//use state принимает данные и возращает массив
-        {id: v1(), title: 'What to read', filter: 'All'},]);
+        {id: todolistID_1, title: 'What to Learn', filter: 'All'},//use state принимает данные и возращает массив
+        {id: todolistID_2, title: 'What to read', filter: 'All'},]);
     //BLL
 
 
     //hook
-    let [tasks, setTasks] = useState([ //чтоб происходила перерисовка видоизмененных данных
-        {id: v1(), title: 'НTML', isDone: true},//use state принимает данные и возращает массив
-        {id: v1(), title: 'CSS', isDone: true},
-        {id: v1(), title: 'JS/TS', isDone: true},
-        {id: v1(), title: 'CSS', isDone: false},
-        {id: v1(), title: 'JS/TS', isDone: false},
-        {id: v1(), title: 'CSS', isDone: true},
-        {id: v1(), title: 'JS/TS', isDone: true},
-    ]);
+    let [tasks, setTasks] = useState({   //чтоб происходила перерисовка видоизмененных данных
+        [todolistID_1]: [{id: v1(), title: 'НTML', isDone: true},//use state принимает данные и возращает массив
+            {id: v1(), title: 'CSS', isDone: true},
+            {id: v1(), title: 'JS/TS', isDone: true},
+            {id: v1(), title: 'CSS', isDone: false},
+            {id: v1(), title: 'JS/TS', isDone: false},
+            {id: v1(), title: 'CSS', isDone: true},
+            {id: v1(), title: 'JS/TS', isDone: true},
+        ],
+        [todolistID_2]: [
+            {id: v1(), title: 'React', isDone: true},
+            {id: v1(), title: 'Redux', isDone: true},
+            {id: v1(), title: 'SASS', isDone: false},
+            {id: v1(), title: 'OPP', isDone: false},
+
+        ]
+    });
 
 
     //функция-колбэк для кнопки добавления задач в инпут:
-    const addTask = (title: string) => {
-        setTasks([{id: v1(), title: title, isDone: true}, ...tasks])
+    const addTask = (title: string, todolistID: string) => {
+        const copyTasks = {...tasks};
+        copyTasks[todolistID] = [{id: v1(), title: title, isDone: true}, ...tasks[todolistID]]
+        setTasks(copyTasks);
     }
 
     // функция для кнопки удаления
-    const removeTask = (mId: string) => {  //mId-мы назвали id специально чтоб не путаться где чье id
-        setTasks(tasks.filter(f => f.id !== mId)) //функция удаления которая будет привязана к кнопке и ее надо через
+    const removeTask = (taskID: string, todolistID: string) => {
+        const copyTasks = {...tasks};
+        copyTasks[todolistID] = copyTasks[todolistID].filter(f => f.id !== taskID)
+        setTasks(copyTasks) //функция удаления которая будет привязана к кнопке и ее надо через
         //пропс поместить в туду лист
     }
+    const changeTaskStatus = (taskID: string, newIsDoneValue: boolean, todolistID: string) => {
+        const copyTasks = {...tasks};
+        copyTasks[todolistID] = tasks[todolistID].map(t => t.id === taskID ? {...t, isDone: newIsDoneValue} : t);
+        setTasks(copyTasks);
+    };  // функция управления чекбоксом вкл и выкл
 
 
     //функция фильтрации кнопок: принимает значение value от кнопок
-    const filteredTask = (todolistID:string,value: filterType) => {  //принимаем от кнопки value (например'all')
-        setTodolists(todolists.map(m=> todolistID===m.id ? {...m,filter:value}: m));
+    const filteredTask = (todolistID: string, value: filterType) => {  //принимаем от кнопки value (например'all')
+        setTodolists(todolists.map(m => todolistID === m.id ? {...m, filter: value} : m));
+    }
+
+    //функция удаления тудулистов
+    const removeTodolist = (todolistID: string) => {
+
+        setTodolists(todolists.filter(f => f.id !== todolistID))
+        const copyTask = {...tasks}
+        delete copyTask[todolistID]
+        setTasks(copyTask);
+    }
+
+    const getTasksForRender = (filter:filterType,tasks:Array<TaskType>) => {
+        switch (filter) {
+            case 'Completed':
+                return tasks.filter(f => f.isDone)
+            case  'Active':
+                return tasks.filter(f => !f.isDone);
+            default:
+                return tasks;
         }
-
-
-    const changeTaskStatus = (id: string, newIsDoneValue: boolean) => {
-        setTasks(tasks.map(t => t.id === id ? {...t, isDone: newIsDoneValue} : t))
-    };  //функция управления чекбоксом вкл и выкл
+    }
+    const todolistsComp = todolists.map(m => {
+        // if (m.filter === 'Active') {
+        //     tasks = tasks.filter(f => f.isDone);
+        // }
+        //
+        // if (m.filter === 'Completed') {
+        //     tasks = tasks.filter(f => !f.isDone);
+        // }
+        return (
+            <TodoList
+                key={m.id}
+                todolistID={m.id} //если красная надо типизировать v todolist.tsx
+                title={m.title}
+                tasks={getTasksForRender(m.filter,tasks[m.id])}
+                removeTask={removeTask} //перебрасываем в тудулист функция удаления
+                setFilter={filteredTask} //передаем функцию и не забываем типизаровать в тудулисте
+                addTask={addTask}
+                changeTaskStatus={changeTaskStatus}
+                filter={m.filter} //для навешивания css классов кнопкам
+                filteredTasks={filteredTask}
+            />
+        )
+    })
 
 
     return (
         <div className="App">
-            {todolists.map(m => {
-                if (m.filter === 'Active') {
-                   tasks = tasks.filter(f => f.isDone);
-                }
+            {todolistsComp}
 
-                if (m.filter === 'Completed') {
-                   tasks = tasks.filter(f => !f.isDone);
-                }
-                return (
-                    <TodoList
-                        key={m.id}
-                        todolistID={m.id} //если красная надо типизировать v todolist.tsx
-                        title={m.title}
-                        tasks={tasks}
-                        removeTask={removeTask} //перебрасываем в тудулист функция удаления
-                        setFilter={filteredTask} //передаем функцию и не забываем типизаровать в тудулисте
-                        addTask={addTask}
-                        changeTaskStatus={changeTaskStatus}
-                        filter={m.filter} //для навешивания css классов кнопкам
-                        filteredTasks={filteredTask}
-                    />
-                )
-            })}
+
 
         </div>
     );

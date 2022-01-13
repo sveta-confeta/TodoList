@@ -1,19 +1,16 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
 import s from '../TodoList.module.css'
 
-type InputPropsType={
-    setTitle:(title:string)=>void
-    title:string
-    addTask:(title:string)=>void
-    error:boolean
-    setError:(value:boolean)=>void
+type InputPropsType = {
+    setTitle: (title: string) => void
+    title: string
+    addTask: (title: string, todolistID: string) => void
+    error: boolean
+    setError: (value: boolean) => void
+    todolistID: string
 }
 
-export const Input = (props:InputPropsType) => {
-
-
-
-
+export const Input = (props: InputPropsType) => {
     const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {  //функция для инпута
         props.setError(false);
         props.setTitle(event.currentTarget.value)
@@ -22,9 +19,9 @@ export const Input = (props:InputPropsType) => {
         if (event.key === 'Enter') {
             const trimmedTitle = props.title.trim();
             if (trimmedTitle) {
-                props.addTask(trimmedTitle)
-                props.setTitle( '')
-            }else{
+                props.addTask(trimmedTitle,props.todolistID)
+                props.setTitle('')
+            } else {
                 props.setError(true);
             }
 
@@ -36,9 +33,9 @@ export const Input = (props:InputPropsType) => {
                 value={props.title}
                 onChange={onChangeHandler}
                 onKeyPress={keyPress}
-                className={props.error ? s.error :' '}
+                className={props.error ? s.error : ' '}
             />
-            </>
+        </>
     );
 };
 
