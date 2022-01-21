@@ -1,8 +1,8 @@
-import React, {ChangeEvent, ChangeEventHandler, useState, KeyboardEvent} from "react";
+import React, {ChangeEvent, useState} from "react";
 import {filterType} from "./App";
 import {Button} from "./components/Button";
-import {Input} from "./components/Input";
 import s from './TodoList.module.css'
+import {AddItemForm} from "./components/AddItemForm";
 
 export type TaskType = {
     id: string //для идентификации конкретной таски, когда их много
@@ -24,55 +24,39 @@ type TodoListPropsType = {
     changeTaskStatus: (id: string,newIsDoneValue: boolean,todolistID:string) => void
     filter: filterType;
     filteredTasks:(id:string,value:filterType,)=>void
+    removeTodolist:(todolistID:string)=>void
 }
 
 export function TodoList(props: TodoListPropsType) {
-
-    // const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {  //функция для инпута
-    //     setTitle(event.currentTarget.value)
-    // }
-
-    // const addTask= () => {
-    //     const trimmedTitle = title.trim();
-    //     if (trimmedTitle) {
-    //         props.addTask(trimmedTitle)
-    //     }
-    // }
-    // const keyPress = (event: KeyboardEvent<HTMLInputElement>) => {
-    //     if (event.key === 'Enter') {
-    //         addTitle()
-    //     }
-    // }
-    const [title, setTitle] = useState<string>(' '); //локальный useState для предварительного пользовательского ввода в инпут.
-    //по умолчанию пустая сторока
-    let [error, setError] = useState(false); //хук для бордера инпута красный-не красный
 
     const topSet = (value: filterType) => { //app.tsx:type filterType = 'All' | 'Active' | 'Completed' //типизация фильтра для кнопок
         props.filteredTasks(props.todolistID,value);
     }
     const removeTaskHandler = (tID: string) => props.removeTask(tID,props.todolistID);
 
-    const blockButton = () => {
-        addTaskButton()
-    }
-    const addTaskButton = () => {
-        const trimmedTitle = title.trim();
-        if (trimmedTitle) {
-            props.addTask(trimmedTitle,props.todolistID)
-            setTitle('')
-        } else {
-            setError(true);
-        }
 
-    }
+
     const changeStatus = (mId: string, value: boolean) => props.changeTaskStatus(mId, value,props.todolistID);
+    const removeTodolists=()=>{
+        removeTodolist();
+    }
+
+    const removeTodolist=()=>{
+        props.removeTodolist(props.todolistID)
+    }
+
+    const addTask=(newTaskTitle:string)=>{
+         props.addTask(newTaskTitle,props.todolistID)
+    }
 
 
     return (
         <div>
             <h3>{props.title}</h3>
+            <Button name={'X'} callback={removeTodolists}/>
             <div>
-                <Input setTitle={setTitle} title={title} addTask={props.addTask} error={error} setError={setError} todolistID={props.todolistID}/>
+                {/*//компонента с инпут и кнопкой:*/}
+              <AddItemForm addItem={addTask} />
                 {/*<input*/}
                 {/*    value={title}*/}
                 {/*    onChange={onChangeHandler}  //!!!!!инпут сдесь*/}
@@ -80,8 +64,8 @@ export function TodoList(props: TodoListPropsType) {
                 {/*/>*/}
                 {/*/!*передаем функцию-коллбэк:*!/*/}
                 {/*/!*<button onClick={addTitle}>+</button>*!/*/}
-                <Button name={'+'} callback={blockButton}/>
-                {error ? <div className={s.errorMessages}>Title is requires</div> : ''}
+
+
             </div>
             <ul>{/* потому что в эту ul мы передаем array => tasks*/}
                 {props.tasks.map((m => {

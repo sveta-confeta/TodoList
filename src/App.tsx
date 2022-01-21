@@ -3,6 +3,7 @@ import './App.css';
 import {TodoList} from "./TodoList";
 import {v1} from "uuid";
 import {TaskType} from "./TodoList";
+import {AddItemForm} from "./components/AddItemForm";
 
 export type filterType = 'All' | 'Active' | 'Completed' //типизация фильтра для кнопок
 type TodilistsType = {
@@ -75,8 +76,15 @@ function App() {
         delete copyTask[todolistID]
         setTasks(copyTask);
     }
+    const addTodolist = (titleTodolist:string) => {
+      const newTodolistID = v1() ;
+      setTodolists([...todolists,{id:newTodolistID,title:titleTodolist,filter:'All'}]);
+      setTasks({...tasks,[newTodolistID]:[]});//для нашего тудулиста должны создать массив для хранения тасок=
+        // изменяем стейт с тасками =создадим новое свой ство:пустой массив где будем храниить таски нашего тудулиста.
+    }
 
-    const getTasksForRender = (filter:filterType,tasks:Array<TaskType>) => {
+
+    const getTasksForRender = (filter: filterType, tasks: Array<TaskType>) => {
         switch (filter) {
             case 'Completed':
                 return tasks.filter(f => f.isDone)
@@ -95,29 +103,36 @@ function App() {
         //     tasks = tasks.filter(f => !f.isDone);
         // }
         return (
+
             <TodoList
                 key={m.id}
                 todolistID={m.id} //если красная надо типизировать v todolist.tsx
                 title={m.title}
-                tasks={getTasksForRender(m.filter,tasks[m.id])}
+                tasks={getTasksForRender(m.filter, tasks[m.id])}
                 removeTask={removeTask} //перебрасываем в тудулист функция удаления
                 setFilter={filteredTask} //передаем функцию и не забываем типизаровать в тудулисте
                 addTask={addTask}
                 changeTaskStatus={changeTaskStatus}
                 filter={m.filter} //для навешивания css классов кнопкам
                 filteredTasks={filteredTask}
+                removeTodolist={removeTodolist}
             />
+
         )
     })
 
 
     return (
-        <div className="App">
-            {todolistsComp}
+        <>
+            {/*//компонента с инпут и кнопкой:*/}
+           <AddItemForm  addItem={addTodolist}/>
 
+            <div className="App">
 
+                {todolistsComp}
 
-        </div>
+            </div>
+        </>
     );
 }
 
