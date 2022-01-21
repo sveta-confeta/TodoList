@@ -43,9 +43,7 @@ export const AddItemForm: React.FC<AddItemFormPropsType> = (props) => {
     const blockButton = () => {
         addTaskButton()
     }
-    // const addTodolist = () => {
-    //     console.log('gggg')
-    // }
+
     return (
         <div>
             <Input onChangeHandler={onChangeHandler} title={title}  error={error}

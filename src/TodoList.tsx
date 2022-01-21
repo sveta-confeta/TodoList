@@ -3,6 +3,7 @@ import {filterType} from "./App";
 import {Button} from "./components/Button";
 import s from './TodoList.module.css'
 import {AddItemForm} from "./components/AddItemForm";
+import EditSpan from "./components/EditSpan";
 
 export type TaskType = {
     id: string //для идентификации конкретной таски, когда их много
@@ -75,7 +76,8 @@ export function TodoList(props: TodoListPropsType) {
                             <input type="checkbox"
                                    checked={m.isDone}
                                    onChange={(e: ChangeEvent<HTMLInputElement>) => changeStatus(m.id, e.currentTarget.checked)}
-                            /> <span>{m.title}</span>
+                            />
+                            <EditSpan title={m.title}/>
                             <Button name={'x'} callback={() => removeTaskHandler(m.id)}/>
 
                         </li>

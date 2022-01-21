@@ -94,6 +94,9 @@ function App() {
                 return tasks;
         }
     }
+
+
+
     const todolistsComp = todolists.map(m => {
         // if (m.filter === 'Active') {
         //     tasks = tasks.filter(f => f.isDone);
