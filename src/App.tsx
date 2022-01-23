@@ -68,6 +68,13 @@ function App() {
         setTodolists(todolists.map(m => todolistID === m.id ? {...m, filter: value} : m));
     }
 
+    const apdateTaskTitle=(todolistID:string,taskID:string,title:string)=>{
+        const copyTasks = {...tasks};
+        copyTasks[todolistID] = tasks[todolistID].map(t => t.id === taskID ? {...t, title:title} : t);
+        setTasks(copyTasks);
+
+  }
+
     //функция удаления тудулистов
     const removeTodolist = (todolistID: string) => {
 
@@ -119,6 +126,7 @@ function App() {
                 filter={m.filter} //для навешивания css классов кнопкам
                 filteredTasks={filteredTask}
                 removeTodolist={removeTodolist}
+                apdateTaskTitle={apdateTaskTitle}
             />
 
         )
@@ -128,6 +136,7 @@ function App() {
     return (
         <>
             {/*//компонента с инпут и кнопкой:*/}
+            {/*инпут и кнопка:*/}
            <AddItemForm  addItem={addTodolist}/>
 
             <div className="App">

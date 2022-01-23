@@ -26,6 +26,7 @@ type TodoListPropsType = {
     filter: filterType;
     filteredTasks:(id:string,value:filterType,)=>void
     removeTodolist:(todolistID:string)=>void
+    apdateTaskTitle:(todolistsID:string,taskID:string,title:string)=>void
 }
 
 export function TodoList(props: TodoListPropsType) {
@@ -49,6 +50,11 @@ export function TodoList(props: TodoListPropsType) {
     const addTask=(newTaskTitle:string)=>{
          props.addTask(newTaskTitle,props.todolistID)
     }
+
+    const callbackHandlerapdateTask=(mID:string,title:string)=>{
+        props.apdateTaskTitle(props.todolistID,mID,title);
+    }
+
 
 
     return (
@@ -77,7 +83,7 @@ export function TodoList(props: TodoListPropsType) {
                                    checked={m.isDone}
                                    onChange={(e: ChangeEvent<HTMLInputElement>) => changeStatus(m.id, e.currentTarget.checked)}
                             />
-                            <EditSpan title={m.title}/>
+                            <EditSpan title={m.title}  apdateTask={ (title:string)=>callbackHandlerapdateTask(m.id,title)}/>
                             <Button name={'x'} callback={() => removeTaskHandler(m.id)}/>
 
                         </li>

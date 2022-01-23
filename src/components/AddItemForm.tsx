@@ -20,13 +20,7 @@ export const AddItemForm: React.FC<AddItemFormPropsType> = (props) => {
 
     const keyPress = (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
-            const trimmedTitle = title.trim();
-            if (trimmedTitle) {
-                props.addItem(trimmedTitle)
-                setTitle('')
-            } else {
-                setError(true);
-            }
+            addTaskButton();
         }
     }
 

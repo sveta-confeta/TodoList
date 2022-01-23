@@ -1,8 +1,8 @@
 import React, {ChangeEvent, useState} from 'react';
 
 type EditSpanPropsType={
-    title:string
-    // changeTitle:(editTitle:string)=>void//нам нужен колбэк который подхватит новое значение инпута и унесет его в родителя
+    title:string //компонента получает строку
+    apdateTask:(title:string)=>void//нам нужен колбэк который подхватит новое значение инпута отредактипованную унесет его в родителя
 }
 
 const EditSpan = (props:EditSpanPropsType) => {
@@ -21,7 +21,7 @@ const EditSpan = (props:EditSpanPropsType) => {
     }
 
     const offEditMode=()=>{
-        // props.changeTitle(title);
+       props. apdateTask(title);
         setEditMode(false);
     }
     return (
