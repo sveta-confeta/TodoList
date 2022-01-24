@@ -71,9 +71,13 @@ function App() {
     const apdateTaskTitle=(todolistID:string,taskID:string,title:string)=>{
         const copyTasks = {...tasks};
         copyTasks[todolistID] = tasks[todolistID].map(t => t.id === taskID ? {...t, title:title} : t);
-        setTasks(copyTasks);
+        setTasks(copyTasks);  //функция которая редактирует title в тасках
 
   }
+
+  const titleTodolist=(todolistID:string,title:string)=>{
+     setTodolists(todolists.map(m=> todolistID===m.id ? {...m,title:title} :m ));
+  } //функция которая редактирует  title в тодолистах
 
     //функция удаления тудулистов
     const removeTodolist = (todolistID: string) => {
@@ -127,6 +131,7 @@ function App() {
                 filteredTasks={filteredTask}
                 removeTodolist={removeTodolist}
                 apdateTaskTitle={apdateTaskTitle}
+                titleTodolist={titleTodolist}
             />
 
         )
