@@ -1,7 +1,8 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
 import {Input} from "./Input";
-import {Button} from "./Button";
+import {ButtonOne} from "./Button";
 import s from "../TodoList.module.css";
+
 
 type AddItemFormPropsType = {
     addItem:(itemTitle:string)=>void
@@ -42,7 +43,8 @@ export const AddItemForm: React.FC<AddItemFormPropsType> = (props) => {
         <div>
             <Input onChangeHandler={onChangeHandler} title={title}  error={error}
                    keyPress={keyPress}/>
-            <Button name={'+'} callback={blockButton}/>
+
+            <ButtonOne name={'+'} callback={blockButton}/>
             {error ? <div className={s.errorMessage}>Title is requires</div> : ''}
         </div>
     );

@@ -1,4 +1,6 @@
 import React, {ChangeEvent, useState} from 'react';
+import {ButtonOne} from "./Button";
+import {Delete} from "@material-ui/icons";
 
 type EditSpanPropsType={
     title:string //компонента получает строку
@@ -25,7 +27,10 @@ const EditSpan = (props:EditSpanPropsType) => {
         setEditMode(false);
     }
     return (
-        editMode ? <input onChange={onChangeHandler} value={title} autoFocus onBlur={offEditMode}/> : <span onDoubleClick={onEditMode}>{props.title}</span>
+
+        editMode
+            ?  <div><input onChange={onChangeHandler} value={title} autoFocus onBlur={offEditMode}/>   <ButtonOne name={'x'} /> </div>
+            : <div><span onDoubleClick={onEditMode}>{props.title}</span>  <Delete  color="action" style={{cursor:'Pointer'}} /> </div>
 
     );
 };

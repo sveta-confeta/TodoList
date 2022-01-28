@@ -1,9 +1,14 @@
 import React, {ChangeEvent, useState} from "react";
 import {filterType} from "./App";
-import {Button} from "./components/Button";
+import {ButtonOne} from "./components/Button";
 import s from './TodoList.module.css'
 import {AddItemForm} from "./components/AddItemForm";
 import EditSpan from "./components/EditSpan";
+import {Button, ButtonGroup, IconButton} from "@material-ui/core";
+import { Delete } from "@material-ui/icons";
+
+
+
 
 export type TaskType = {
     id: string //для идентификации конкретной таски, когда их много
@@ -65,7 +70,10 @@ export function TodoList(props: TodoListPropsType) {
         <div>
             {/*<h3>{props.title}</h3>*/}
             <h3><EditSpan title={props.title} apdateTask={ (title:string)=>callbackTitleTodolist(title)}/></h3>
-            <Button name={'X'} callback={removeTodolists}/>
+            {/*<IconButton aria-label="delete" >*/}
+                <Delete  color="action" style={{cursor:'Pointer'}} onClick={removeTodolists}/>
+        {/*</IconButton>*/}
+            <ButtonOne name={'X'} callback={removeTodolists}/>
             <div>
                 {/*//компонента с инпут и кнопкой:*/}
               <AddItemForm addItem={addTask} />
@@ -89,21 +97,30 @@ export function TodoList(props: TodoListPropsType) {
                                    onChange={(e: ChangeEvent<HTMLInputElement>) => changeStatus(m.id, e.currentTarget.checked)}
                             />
                             <EditSpan title={m.title}  apdateTask={ (title:string)=>callbackHandlerapdateTask(m.id,title)}/>
-                            <Button name={'x'} callback={() => removeTaskHandler(m.id)}/>
+                            {/*<ButtonOne name={'x'} callback={() => removeTaskHandler(m.id)}/>*/}
 
                         </li>
                     )
                 }))}
             </ul>
             <div>
-                <button className={props.filter === 'All' ? s.activeFilter : ''}
-                        onClick={() => topSet('All')}>All</button>
-                    <button className={props.filter === 'Active' ? s.activeFilter : ''}
+                <ButtonGroup variant="contained"
+                size={"small"}>
+
+                <Button color = {props.filter==='All' ? 'secondary': 'success'}
+                        // className={props.filter === 'All' ? s.activeFilter : ''}
+                        onClick={() => topSet('All')}>All</Button>
+                    <Button
+                        color = {props.filter==='Active' ? 'secondary': 'success'}
+                        // className={props.filter === 'Active' ? s.activeFilter : ''}
                             onClick={() => topSet('Active')}> Active
-                        </button>
-                        <button className={props.filter === 'Completed' ? s.activeFilter : ''}
+                        </Button>
+                        <Button
+                            color = {props.filter==='Completed' ? 'secondary': 'success'}
+                            // className={props.filter === 'Completed' ? s.activeFilter : ''}
                                 onClick={() => topSet('Completed')}>Completed
-                            </button>
+                            </Button>
+                </ButtonGroup>
             </div>
         </div>
 
