@@ -1,11 +1,10 @@
 import React, {ChangeEvent, useState} from "react";
 import {filterType} from "./App";
-import {ButtonOne} from "./components/Button";
-import s from './TodoList.module.css'
 import {AddItemForm} from "./components/AddItemForm";
-import EditSpan from "./components/EditSpan";
+import {EditSpan} from "./components/EditSpan";
 import {Button, ButtonGroup, IconButton} from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
+import s from "./TodoList.module.css";
 
 
 
@@ -70,11 +69,14 @@ export function TodoList(props: TodoListPropsType) {
         <div>
             {/*<h3>{props.title}</h3>*/}
             <h3><EditSpan title={props.title} apdateTask={ (title:string)=>callbackTitleTodolist(title)}/></h3>
-            {/*<IconButton aria-label="delete" >*/}
-                <Delete  color="action" style={{cursor:'Pointer'}} onClick={removeTodolists}/>
-        {/*</IconButton>*/}
-            <ButtonOne name={'X'} callback={removeTodolists}/>
-            <div>
+            <IconButton aria-label="delete">
+                <Delete color="action" style={{cursor:'Pointer'}} onClick={removeTodolist}/>
+            </IconButton>
+
+
+        {/*    <Button  name={'X'} callback={removeTodolists} }/>*/}
+
+                <div>
                 {/*//компонента с инпут и кнопкой:*/}
               <AddItemForm addItem={addTask} />
                 {/*<input*/}
@@ -97,7 +99,10 @@ export function TodoList(props: TodoListPropsType) {
                                    onChange={(e: ChangeEvent<HTMLInputElement>) => changeStatus(m.id, e.currentTarget.checked)}
                             />
                             <EditSpan title={m.title}  apdateTask={ (title:string)=>callbackHandlerapdateTask(m.id,title)}/>
-                            {/*<ButtonOne name={'x'} callback={() => removeTaskHandler(m.id)}/>*/}
+                            {/*<Button name={'x'} callback={() => removeTaskHandler(m.id)}/>*/}
+                            {/*кнопка из материал:*/}
+                            <Delete color="action"  style={{cursor:'Pointer',width: '15px'}} onClick={() => removeTaskHandler(m.id)}/>
+
 
                         </li>
                     )

@@ -4,6 +4,8 @@ import {TodoList} from "./TodoList";
 import {v1} from "uuid";
 import {TaskType} from "./TodoList";
 import {AddItemForm} from "./components/AddItemForm";
+import ButtonAppBar from "./components/ButtonAppBar";
+import {Container, Grid, Paper} from "@mui/material";
 
 export type filterType = 'All' | 'Active' | 'Completed' //типизация фильтра для кнопок
 type TodilistsType = {
@@ -68,16 +70,16 @@ function App() {
         setTodolists(todolists.map(m => todolistID === m.id ? {...m, filter: value} : m));
     }
 
-    const apdateTaskTitle=(todolistID:string,taskID:string,title:string)=>{
+    const apdateTaskTitle = (todolistID: string, taskID: string, title: string) => {
         const copyTasks = {...tasks};
-        copyTasks[todolistID] = tasks[todolistID].map(t => t.id === taskID ? {...t, title:title} : t);
+        copyTasks[todolistID] = tasks[todolistID].map(t => t.id === taskID ? {...t, title: title} : t);
         setTasks(copyTasks);  //функция которая редактирует title в тасках
 
-  }
+    }
 
-  const titleTodolist=(todolistID:string,title:string)=>{
-     setTodolists(todolists.map(m=> todolistID===m.id ? {...m,title:title} :m ));
-  } //функция которая редактирует  title в тодолистах
+    const titleTodolist = (todolistID: string, title: string) => {
+        setTodolists(todolists.map(m => todolistID === m.id ? {...m, title: title} : m));
+    } //функция которая редактирует  title в тодолистах
 
     //функция удаления тудулистов
     const removeTodolist = (todolistID: string) => {
@@ -87,10 +89,10 @@ function App() {
         delete copyTask[todolistID]
         setTasks(copyTask);
     }
-    const addTodolist = (titleTodolist:string) => {
-      const newTodolistID = v1() ;
-      setTodolists([...todolists,{id:newTodolistID,title:titleTodolist,filter:'All'}]);
-      setTasks({...tasks,[newTodolistID]:[]});//для нашего тудулиста должны создать массив для хранения тасок=
+    const addTodolist = (titleTodolist: string) => {
+        const newTodolistID = v1();
+        setTodolists([...todolists, {id: newTodolistID, title: titleTodolist, filter: 'All'}]);
+        setTasks({...tasks, [newTodolistID]: []});//для нашего тудулиста должны создать массив для хранения тасок=
         // изменяем стейт с тасками =создадим новое свой ство:пустой массив где будем храниить таски нашего тудулиста.
     }
 
@@ -107,7 +109,6 @@ function App() {
     }
 
 
-
     const todolistsComp = todolists.map(m => {
         // if (m.filter === 'Active') {
         //     tasks = tasks.filter(f => f.isDone);
@@ -116,39 +117,47 @@ function App() {
         // if (m.filter === 'Completed') {
         //     tasks = tasks.filter(f => !f.isDone);
         // }
-        return (
-
-            <TodoList
-                key={m.id}
-                todolistID={m.id} //если красная надо типизировать v todolist.tsx
-                title={m.title}
-                tasks={getTasksForRender(m.filter, tasks[m.id])}
-                removeTask={removeTask} //перебрасываем в тудулист функция удаления
-                setFilter={filteredTask} //передаем функцию и не забываем типизаровать в тудулисте
-                addTask={addTask}
-                changeTaskStatus={changeTaskStatus}
-                filter={m.filter} //для навешивания css классов кнопкам
-                filteredTasks={filteredTask}
-                removeTodolist={removeTodolist}
-                apdateTaskTitle={apdateTaskTitle}
-                titleTodolist={titleTodolist}
-            />
-
-        )
+        return <Grid item>
+            <Paper elevation={3} style={{padding: "10px"}}>
+                <TodoList
+                    key={m.id}
+                    todolistID={m.id} //если красная надо типизировать v todolist.tsx
+                    title={m.title}
+                    tasks={getTasksForRender(m.filter, tasks[m.id])}
+                    removeTask={removeTask} //перебрасываем в тудулист функция удаления
+                    setFilter={filteredTask} //передаем функцию и не забываем типизаровать в тудулисте
+                    addTask={addTask}
+                    changeTaskStatus={changeTaskStatus}
+                    filter={m.filter} //для навешивания css классов кнопкам
+                    filteredTasks={filteredTask}
+                    removeTodolist={removeTodolist}
+                    apdateTaskTitle={apdateTaskTitle}
+                    titleTodolist={titleTodolist}
+                />
+            </Paper>
+        </Grid>
     })
 
 
     return (
         <>
-            {/*//компонента с инпут и кнопкой:*/}
-            {/*инпут и кнопка:*/}
-           <AddItemForm  addItem={addTodolist}/>
+            {/*это хэдер -создается новый компонент и туда копируется содержимое из документа AppBar из материал:*/}
+            <ButtonAppBar/>
+            {/*это фишка из материал юай:*/}
+            <Container fixed>
+                {/*это фишка из материал юай:*/}
+                <Grid container style={{padding:"20px"}}>
+                    {/*инпут и кнопка:*/}
+                    <AddItemForm addItem={addTodolist}/>
+                </Grid>
+                <Grid container spacing={3}>
+                    <div className="App">
 
-            <div className="App">
+                        {todolistsComp}
+                    </div>
+                </Grid>
 
-                {todolistsComp}
-
-            </div>
+            </Container>
         </>
     );
 }
