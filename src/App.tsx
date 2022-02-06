@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useReducer, useState} from 'react';
 import './App.css';
 import {TodoList} from "./TodoList";
 import {v1} from "uuid";
@@ -6,6 +6,7 @@ import {TaskType} from "./TodoList";
 import {AddItemForm} from "./components/AddItemForm";
 import ButtonAppBar from "./components/ButtonAppBar";
 import {Container, Grid, Paper} from "@mui/material";
+import {TasksReducer} from "./reducer/TasksReducer";
 
 export type filterType = 'All' | 'Active' | 'Completed' //типизация фильтра для кнопок
 type TodilistsType = {
@@ -25,7 +26,7 @@ function App() {
 
 
     //hook
-    let [tasks, setTasks] = useState({   //чтоб происходила перерисовка видоизмененных данных
+    let [tasks, tasksDispatch] = useReducer(TasksReducer,{   //чтоб происходила перерисовка видоизмененных данных
         [todolistID_1]: [{id: v1(), title: 'НTML', isDone: true},//use state принимает данные и возращает массив
             {id: v1(), title: 'CSS', isDone: true},
             {id: v1(), title: 'JS/TS', isDone: true},
@@ -53,10 +54,11 @@ function App() {
 
     // функция для кнопки удаления
     const removeTask = (taskID: string, todolistID: string) => {
-        const copyTasks = {...tasks};
-        copyTasks[todolistID] = copyTasks[todolistID].filter(f => f.id !== taskID)
-        setTasks(copyTasks) //функция удаления которая будет привязана к кнопке и ее надо через
-        //пропс поместить в туду лист
+        // const copyTasks = {...tasks};
+        // copyTasks[todolistID] = copyTasks[todolistID].filter(f => f.id !== taskID)
+        // setTasks(copyTasks) //функция удаления которая будет привязана к кнопке и ее надо через
+        // //пропс поместить в туду лист
+        tasksDispatch(RemoveTaskAC(taskID,todolistID))
     }
     const changeTaskStatus = (taskID: string, newIsDoneValue: boolean, todolistID: string) => {
         const copyTasks = {...tasks};
