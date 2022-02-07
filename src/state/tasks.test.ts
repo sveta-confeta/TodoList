@@ -1,4 +1,12 @@
-import {addSalary, AddSalaryActionType, divSalary, fallSalary, multiplaySalary, salaryReducer} from "./tasks";
+import {
+    addSalary,
+    AddSalaryActionType,
+    divSalary, DivSalaryActionType,
+    fallSalary,
+    FallSalaryActionType,
+    multiplaySalary, MultiplaySalaryActionType,
+    salaryReducer
+} from "./tasks";
 
 test('addSalary',()=>{
     //1.test data
@@ -53,8 +61,55 @@ test('case Add-SALARY of salaryReducer',()=>{
         }
 
     }
-
     //3 проверка ожидаемого результата
     expect(salaryReducer(salary,xxx)).toBe(1000);
+    //звпуск теста например yarn test
+})
+
+//2.
+test('case FALL-SALARY of salaryReducer',()=>{
+    //1.test data
+    const salary:number=700;
+    const xxx: FallSalaryActionType={ //можно вместо ххх-action
+        type:'FALL-SALARY',
+        payload:{
+            minus:300
+        }
+
+    }
+    //3 проверка ожидаемого результата
+    expect(salaryReducer(salary,xxx)).toBe(400);
+    //звпуск теста например yarn test
+})
+
+//3
+test('case MULTIPLAY-SALARY of salaryReducer',()=>{
+    //1.test data
+    const salary:number=700;
+    const xxx: MultiplaySalaryActionType={ //можно вместо ххх-action
+        type:'MULTIPLAY-SALARY',
+        payload:{
+            coefficient:2
+        }
+
+    }
+    //3 проверка ожидаемого результата
+    expect(salaryReducer(salary,xxx)).toBe(1400);
+    //звпуск теста например yarn test
+})
+
+//4
+test('case Div-SALARY of salaryReducer',()=>{
+    //1.test data
+    const salary:number=800;
+    const xxx: DivSalaryActionType={ //можно вместо ххх-action
+        type:'DIV-SALARY',
+        payload:{
+            coefficient:2
+        }
+
+    }
+    //3 проверка ожидаемого результата
+    expect(salaryReducer(salary,xxx)).toBe(400);
     //звпуск теста например yarn test
 })

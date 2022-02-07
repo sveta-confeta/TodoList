@@ -20,15 +20,39 @@ export type AddSalaryActionType = {
         bonus: number
     }
 }
+export type FallSalaryActionType = {
+    type: 'FALL-SALARY'
+    payload: {
+        minus: number
+    }
+}
+export type MultiplaySalaryActionType = {
+    type: 'MULTIPLAY-SALARY'
+    payload: {
+        coefficient: number
+    }
+}
+export type DivSalaryActionType = {
+    type: 'DIV-SALARY'
+    payload: {
+        coefficient: number
+    }
+}
 
 
-type ActionType = AddSalaryActionType
+type ActionType = AddSalaryActionType | FallSalaryActionType | MultiplaySalaryActionType | DivSalaryActionType
 
 
 export const salaryReducer = (salary: number, action: ActionType) => {
     switch (action.type) {
         case 'ADD-SALARY':
             return salary + action.payload.bonus;
+        case 'FALL-SALARY':
+            return salary - action.payload.minus;
+        case  'MULTIPLAY-SALARY':
+            return salary * action.payload.coefficient;
+        case 'DIV-SALARY':
+            return salary/action.payload.coefficient;
         default:
             return salary;
     }
