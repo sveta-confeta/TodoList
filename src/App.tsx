@@ -9,7 +9,7 @@ import {Container, Grid, Paper} from "@mui/material";
 import {TasksReducer} from "./reducer/TasksReducer";
 
 export type filterType = 'All' | 'Active' | 'Completed' //типизация фильтра для кнопок
-type TodilistsType = {
+export type TodolistsType = {
     id: string,
     title: string,
     filter: filterType;
