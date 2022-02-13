@@ -1,12 +1,19 @@
 import React, {useReducer, useState} from 'react';
 import './App.css';
-import {TodoList} from "./TodoList";
+import {TasksType, TodoList} from "./TodoList";
 import {v1} from "uuid";
 import {TaskType} from "./TodoList";
 import {AddItemForm} from "./components/AddItemForm";
 import ButtonAppBar from "./components/ButtonAppBar";
 import {Container, Grid, Paper} from "@mui/material";
-import {TasksReducer} from "./reducer/TasksReducer";
+import {AddTaskAC, ApdateTaskTitleTaskAC, RemoveTaskAC, TasksReducer} from "./reducer/TasksReducer";
+import {
+    AddTodolistAC,
+    FilteredTaskAC,
+    RemoveTodolistAC,
+    TitleTodolistAC,
+    TodolistReducer
+} from "./reducer/TodolistsReducer";
 
 export type filterType = 'All' | 'Active' | 'Completed' //типизация фильтра для кнопок
 export type TodolistsType = {
@@ -19,15 +26,13 @@ function App() {
 
     const todolistID_1 = v1();
     const todolistID_2 = v1();
-    let [todolists, setTodolists] = useState<Array<TodilistsType>>([  //чтоб происходила перерисовка видоизмененных данных
+    let [todolists, todolistsDispatch] = useReducer<Array<TodolistsType>>(TodolistReducer, [ //чтоб происходила перерисовка видоизмененных данных
         {id: todolistID_1, title: 'What to Learn', filter: 'All'},//use state принимает данные и возращает массив
         {id: todolistID_2, title: 'What to read', filter: 'All'},]);
-    //BLL
 
 
-    //hook
-    let [tasks, tasksDispatch] = useReducer(TasksReducer,{   //чтоб происходила перерисовка видоизмененных данных
-        [todolistID_1]: [{id: v1(), title: 'НTML', isDone: true},//use state принимает данные и возращает массив
+    let [tasks, tasksDispatch] = useReducer<TasksType>(TasksReducer,{   //чтоб происходила перерисовка видоизмененных данных
+        [todolistID_1]: [{id: v1(), title: 'НTML', isDone: true},
             {id: v1(), title: 'CSS', isDone: true},
             {id: v1(), title: 'JS/TS', isDone: true},
             {id: v1(), title: 'CSS', isDone: false},
@@ -47,9 +52,10 @@ function App() {
 
     //функция-колбэк для кнопки добавления задач в инпут:
     const addTask = (title: string, todolistID: string) => {
-        const copyTasks = {...tasks};
-        copyTasks[todolistID] = [{id: v1(), title: title, isDone: true}, ...tasks[todolistID]]
-        setTasks(copyTasks);
+       // let todolistID=v1();
+       // const copyTasks = {...tasks};
+       // copyTasks[todolistID] = [{id: v1(), title: title, isDone: true}, ...tasks[todolistID]]
+        tasksDispatch(AddTaskAC(title,todolistID));
     }
 
     // функция для кнопки удаления
@@ -69,33 +75,39 @@ function App() {
 
     //функция фильтрации кнопок: принимает значение value от кнопок
     const filteredTask = (todolistID: string, value: filterType) => {  //принимаем от кнопки value (например'all')
-        setTodolists(todolists.map(m => todolistID === m.id ? {...m, filter: value} : m));
+       // setTodolists(todolists.map(m => todolistID === m.id ? {...m, filter: value} : m));
+        todolistsDispatch(FilteredTaskAC(todolistID,value));
     }
 
     const apdateTaskTitle = (todolistID: string, taskID: string, title: string) => {
-        const copyTasks = {...tasks};
-        copyTasks[todolistID] = tasks[todolistID].map(t => t.id === taskID ? {...t, title: title} : t);
-        setTasks(copyTasks);  //функция которая редактирует title в тасках
+        //const copyTasks = {...tasks};
+       // copyTasks[todolistID] = tasks[todolistID].map(t => t.id === taskID ? {...t, title: title} : t);
+        //setTasks(copyTasks);  //функция которая редактирует title в тасках
+        tasksDispatch(ApdateTaskTitleTaskAC(todolistID,taskID,title));
 
     }
 
     const titleTodolist = (todolistID: string, title: string) => {
-        setTodolists(todolists.map(m => todolistID === m.id ? {...m, title: title} : m));
+        //setTodolists(todolists.map(m => todolistID === m.id ? {...m, title: title} : m));
+        todolistsDispatch(TitleTodolistAC(todolistID,title))
     } //функция которая редактирует  title в тодолистах
 
     //функция удаления тудулистов
     const removeTodolist = (todolistID: string) => {
+        todolistsDispatch(RemoveTodolistAC(todolistID))
 
-        setTodolists(todolists.filter(f => f.id !== todolistID))
-        const copyTask = {...tasks}
-        delete copyTask[todolistID]
-        setTasks(copyTask);
+        // setTodolists(todolists.filter(f => f.id !== todolistID))
+        // const copyTask = {...tasks}
+        // delete copyTask[todolistID]
+        // setTasks(copyTask);
     }
     const addTodolist = (titleTodolist: string) => {
         const newTodolistID = v1();
-        setTodolists([...todolists, {id: newTodolistID, title: titleTodolist, filter: 'All'}]);
-        setTasks({...tasks, [newTodolistID]: []});//для нашего тудулиста должны создать массив для хранения тасок=
+       // setTodolists([...todolists, {id: newTodolistID, title: titleTodolist, filter: 'All'}]);
+        todolistsDispatch(AddTodolistAC(titleTodolist,newTodolistID))
+        //setTasks({...tasks, [newTodolistID]: []});//для нашего тудулиста должны создать массив для хранения тасок=
         // изменяем стейт с тасками =создадим новое свой ство:пустой массив где будем храниить таски нашего тудулиста.
+        tasksDispatch()
     }
 
 
