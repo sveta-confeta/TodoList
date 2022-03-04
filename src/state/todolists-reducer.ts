@@ -11,6 +11,7 @@ export type RemoveTodolistAcType = {
 export type AddTodolistAcType = {
     type: 'ADD-TODOLIST'
     title: string
+    todolistID:string
 }
 export type ChangeTodolistAcType = {
     type: 'CHANGE-TODOLIST-TITLE',
@@ -22,13 +23,14 @@ export type ChangeFilterACType = {
 }
 
 
-export const todolistsReducer = (todolists: Array<TodolistsType>, action: ActionType) => {
+export const todolistsReducer = (todolists: Array<TodolistsType>, action: ActionType) => { //state
     switch (action.type) {
         case 'REMOVE-TODOLIST':
             return todolists.filter(tl => tl.id !== action.id); //переносим из функции в апп только логику удаления
         case 'ADD-TODOLIST':
-            const newTodolistID = v1(); //NB
-            return [...todolists, {id: newTodolistID, title: action.title, filter: 'All'}];
+            // const newTodolistID = v1(); //NB
+            // return [...todolists, {id: newTodolistID, title: action.title, filter: 'All'}];
+            return [...todolists, {id: action.todolistID, title: action.title, filter: 'All'}];
         case  'CHANGE-TODOLIST-TITLE':
             return todolists.map(m => action.id === m.id ? {...m, title: action.title} : m);
         case  'CHANGE-TODOLIST-FILTER':
@@ -48,7 +50,8 @@ export const todolistsReducer = (todolists: Array<TodolistsType>, action: Action
     export const AddTodolistAC = (title: string): AddTodolistAcType => {
         return {
             type: "ADD-TODOLIST",
-            title: title
+            title: title,
+            todolistID:v1() //создаем id для тасок и тудулистов новых
         } as const
     }
     export const ChangeTodolistAC = (title: string, id: string): ChangeTodolistAcType => {

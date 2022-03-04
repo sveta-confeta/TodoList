@@ -16,7 +16,6 @@ export type TaskType = {
 }
 export type TasksType={
     [key:string]:Array<TaskType>
-
 }
 
 type TodoListPropsType = {
