@@ -2,9 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
-import {AppWhithReducer} from "./AppWhithReducer";
+import {store} from "./state/store";
+import {Provider} from "react-redux";
+import {AppWhithRedux} from "./AppWhithRedux";
 
-ReactDOM.render(<AppWhithReducer/>,  document.getElementById('root'));
+ReactDOM.render( <Provider store={store}>
+    <AppWhithRedux/>
+    </Provider>, document.getElementById('root'));
+;
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
