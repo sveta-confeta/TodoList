@@ -1,10 +1,10 @@
-import React, {ChangeEvent, useState} from "react";
-import {filterType} from "./App";
+import React, {ChangeEvent} from "react";
 import {AddItemForm} from "./components/AddItemForm";
 import {EditSpan} from "./components/EditSpan";
 import {Button, ButtonGroup, IconButton} from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
-import s from "./TodoList.module.css";
+import {filterType} from "./AppWhithReducer";
+
 
 
 

@@ -1,5 +1,6 @@
-import {filterType, TodolistsType} from "../App";
+
 import {v1} from "uuid";
+import {filterType, TodolistsType} from "../AppWhithReducer";
 
 
 export type ActionType = RemoveTodolistAcType | AddTodolistAcType | ChangeTodolistAcType | ChangeFilterACType;
@@ -23,7 +24,7 @@ export type ChangeFilterACType = {
 }
 
 
-export const todolistsReducer = (todolists: Array<TodolistsType>, action: ActionType) => { //state
+export const todolistsReducer = (todolists: Array<TodolistsType>, action: ActionType): Array<TodolistsType> => { //state
     switch (action.type) {
         case 'REMOVE-TODOLIST':
             return todolists.filter(tl => tl.id !== action.id); //переносим из функции в апп только логику удаления
