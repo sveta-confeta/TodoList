@@ -78,19 +78,10 @@ export function TodoList(props: TodoListPropsType) {
                 <div>
                 {/*//компонента с инпут и кнопкой:*/}
               <AddItemForm addItem={addTask} />
-                {/*<input*/}
-                {/*    value={title}*/}
-                {/*    onChange={onChangeHandler}  //!!!!!инпут сдесь*/}
-                {/*    onKeyPress={keyPress}*/}
-                {/*/>*/}
-                {/*/!*передаем функцию-коллбэк:*!/*/}
-                {/*/!*<button onClick={addTitle}>+</button>*!/*/}
-
 
             </div>
-            <ul>{/* потому что в эту ul мы передаем array => tasks*/}
+            <ul>
                 {props.tasks.map((m => {
-
                     return (
                         <li key={m.id} className={m.isDone ? "is-done" : ''}>
                             <input type="checkbox"

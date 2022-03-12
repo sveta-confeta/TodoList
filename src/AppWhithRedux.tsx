@@ -14,6 +14,8 @@ import {
     RemoveTodolistAC,
     todolistsReducer
 } from "./state/todolists-reducer";
+import {useDispatch, useSelector} from "react-redux";
+import {AppRootStateType} from "./state/store";
 
 export type filterType = 'All' | 'Active' | 'Completed' //типизация фильтра для кнопок
 export type TodolistsType = {
@@ -24,38 +26,44 @@ export type TodolistsType = {
 
 export function AppWhithRedux() {
 
-    const todolistID_1 = v1();
-    const todolistID_2 = v1();
-    let [todolists,dispatchTodolists] = useReducer(todolistsReducer, [
-        {id: todolistID_1, title: 'What to Learn', filter: 'All'},
-        {id: todolistID_2, title: 'What to read', filter: 'All'},]);
+    // const todolistID_1 = v1();
+    // const todolistID_2 = v1();
+    // let [todolists,dispatchTodolists] = useReducer(todolistsReducer, [
+    //     {id: todolistID_1, title: 'What to Learn', filter: 'All'},
+    //     {id: todolistID_2, title: 'What to read', filter: 'All'},]);
 
 
-    let [tasks, dispatchTasks] = useReducer(TasksReducer,{   //чтоб происходила перерисовка видоизмененных данных
-        [todolistID_1]: [{id: v1(), title: 'НTML', isDone: true},
-            {id: v1(), title: 'CSS', isDone: true},
-            {id: v1(), title: 'JS/TS', isDone: true},
-            {id: v1(), title: 'CSS', isDone: false},
-            {id: v1(), title: 'JS/TS', isDone: false},
-            {id: v1(), title: 'CSS', isDone: true},
-            {id: v1(), title: 'JS/TS', isDone: true},
-        ],
-        [todolistID_2]: [
-            {id: v1(), title: 'React', isDone: true},
-            {id: v1(), title: 'Redux', isDone: true},
-            {id: v1(), title: 'SASS', isDone: false},
-            {id: v1(), title: 'OPP', isDone: false},
+    // let [tasks, dispatchTasks] = useReducer(TasksReducer,{   //чтоб происходила перерисовка видоизмененных данных
+    //     [todolistID_1]: [{id: v1(), title: 'НTML', isDone: true},
+    //         {id: v1(), title: 'CSS', isDone: true},
+    //         {id: v1(), title: 'JS/TS', isDone: true},
+    //         {id: v1(), title: 'CSS', isDone: false},
+    //         {id: v1(), title: 'JS/TS', isDone: false},
+    //         {id: v1(), title: 'CSS', isDone: true},
+    //         {id: v1(), title: 'JS/TS', isDone: true},
+    //     ],
+    //     [todolistID_2]: [
+    //         {id: v1(), title: 'React', isDone: true},
+    //         {id: v1(), title: 'Redux', isDone: true},
+    //         {id: v1(), title: 'SASS', isDone: false},
+    //         {id: v1(), title: 'OPP', isDone: false},
+    //
+    //     ]
+    // });
 
-        ]
-    });
 
 
+  // если нет заглушки из данных, то будет создаваться пустая структура, в которую из сервера придут данные
+  const tasks=useSelector<AppRootStateType,TasksType>(state =>state.tasks);
+  const todolists=useSelector<AppRootStateType,Array<TodolistsType>>(state => state.todolists);
+
+  const dispatch=useDispatch()
     //функция-колбэк для кнопки добавления задач в инпут:
     const addTask = (title: string, todolistID: string) => {
        // let todolistID=v1();
        // const copyTasks = {...tasks};
        // copyTasks[todolistID] = [{id: v1(), title: title, isDone: true}, ...tasks[todolistID]]
-        dispatchTasks(AddTaskAC(title,todolistID));
+        dispatch(AddTaskAC(title,todolistID));
     }
 
     // функция для кнопки удаления
@@ -64,38 +72,38 @@ export function AppWhithRedux() {
         // copyTasks[todolistID] = copyTasks[todolistID].filter(f => f.id !== taskID)
         // setTasks(copyTasks) //функция удаления которая будет привязана к кнопке и ее надо через
         // //пропс поместить в туду лист
-        dispatchTasks(RemoveTaskAC(taskID,todolistID))
+        dispatch(RemoveTaskAC(taskID,todolistID))
     }
     const changeTaskStatus = (taskID: string, newIsDoneValue: boolean, todolistID: string) => {
         // const copyTasks = {...tasks};
         // copyTasks[todolistID] = tasks[todolistID].map(t => t.id === taskID ? {...t, isDone: newIsDoneValue} : t);
         // setTasks(copyTasks);
-        dispatchTasks(ChangeTaskStatusAC(taskID,newIsDoneValue,todolistID))
+        dispatch(ChangeTaskStatusAC(taskID,newIsDoneValue,todolistID))
     };  // функция управления чекбоксом вкл и выкл
 
 
     //функция фильтрации кнопок: принимает значение value от кнопок
     const filteredTask = (todolistID: string, value: filterType) => {  //принимаем от кнопки value (например'all')
        // setTodolists(todolists.map(m => todolistID === m.id ? {...m, filter: value} : m));
-        dispatchTodolists(ChangeTodolistFilterAC(todolistID,value));
+        dispatch(ChangeTodolistFilterAC(todolistID,value));
     }
 
     const apdateTaskTitle = (todolistID: string, taskID: string, title: string) => {
         //const copyTasks = {...tasks};
        // copyTasks[todolistID] = tasks[todolistID].map(t => t.id === taskID ? {...t, title: title} : t);
         //setTasks(copyTasks);  //функция которая редактирует title в тасках
-        dispatchTasks(ApdateTaskTitleTaskAC(todolistID,taskID,title));
+        dispatch(ApdateTaskTitleTaskAC(todolistID,taskID,title));
 
     }
 
     const titleTodolist = (todolistID: string, title: string) => {
         //setTodolists(todolists.map(m => todolistID === m.id ? {...m, title: title} : m));
-        dispatchTodolists(ChangeTodolistAC(todolistID,title))
+        dispatch(ChangeTodolistAC(todolistID,title))
     } //функция которая редактирует  title в тодолистах
 
     //функция удаления тудулистов
     const removeTodolist = (todolistID: string) => {
-        dispatchTodolists(RemoveTodolistAC(todolistID))
+        dispatch(RemoveTodolistAC(todolistID))
         // dispatchTasks(RemoveTodolistAC(todolistID))
 
         // setTodolists(todolists.filter(f => f.id !== todolistID))
@@ -110,8 +118,8 @@ export function AppWhithRedux() {
         //setTasks({...tasks, [newTodolistID]: []});//для нашего тудулиста должны создать массив для хранения тасок=
         // изменяем стейт с тасками =создадим новое свой ство:пустой массив где будем храниить таски нашего тудулиста.
         let action=AddTodolistAC(titleTodolist)
-        dispatchTasks(action)
-        dispatchTodolists( action);
+        dispatch(action)
+        dispatch( action);
     }
 
 

@@ -1,6 +1,7 @@
 
 import {v1} from "uuid";
 import {filterType, TodolistsType} from "../AppWhithReducer";
+import {TasksType} from "../TodoList";
 
 
 export type ActionType = RemoveTodolistAcType | AddTodolistAcType | ChangeTodolistAcType | ChangeFilterACType;
@@ -22,9 +23,10 @@ export type ChangeTodolistAcType = {
 export type ChangeFilterACType = {
     type: 'CHANGE-TODOLIST-FILTER', id: string, filter: filterType
 }
+const initialState:Array<TodolistsType>=[] //чтоб стейт стал видимым , подготовленным принять данные с сервера
+    //но можно в инициал стейт вставлять временные данные заглушки
 
-
-export const todolistsReducer = (todolists: Array<TodolistsType>, action: ActionType): Array<TodolistsType> => { //state
+export const todolistsReducer = (todolists: Array<TodolistsType> = initialState, action: ActionType): Array<TodolistsType> => { //state
     switch (action.type) {
         case 'REMOVE-TODOLIST':
             return todolists.filter(tl => tl.id !== action.id); //переносим из функции в апп только логику удаления
