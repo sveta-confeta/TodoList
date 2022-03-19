@@ -1,4 +1,4 @@
-import React, {ChangeEvent} from "react";
+import React, {ChangeEvent, useCallback} from "react";
 import {AddItemForm} from "./components/AddItemForm";
 import {EditSpan} from "./components/EditSpan";
 import {Button, ButtonGroup, IconButton} from "@material-ui/core";
@@ -33,7 +33,8 @@ type TodoListPropsType = {
     titleTodolist:(todolistsID:string,title:string)=>void
 }
 
-export function TodoList(props: TodoListPropsType) {
+export const TodoList=React.memo((props: TodoListPropsType) =>{
+    console.log('Todolist');
 
     const topSet = (value: filterType) => { //app.tsx:type filterType = 'All' | 'Active' | 'Completed' //типизация фильтра для кнопок
         props.filteredTasks(props.todolistID,value);
@@ -43,17 +44,15 @@ export function TodoList(props: TodoListPropsType) {
 
 
     const changeStatus = (mId: string, value: boolean) => props.changeTaskStatus(mId, value,props.todolistID);
-    const removeTodolists=()=>{
-        removeTodolist();
-    }
+
 
     const removeTodolist=()=>{
         props.removeTodolist(props.todolistID)
     }
 
-    const addTask=(newTaskTitle:string)=>{
+    const addTask=useCallback((newTaskTitle:string)=>{
          props.addTask(newTaskTitle,props.todolistID)
-    }
+    },[props])
 
     const callbackHandlerapdateTask=(mID:string,title:string)=>{
         props.apdateTaskTitle(props.todolistID,mID,title);
@@ -61,6 +60,16 @@ export function TodoList(props: TodoListPropsType) {
     const callbackTitleTodolist=(title:string)=>{
         props.titleTodolist(props.todolistID,title)
     }
+
+    let todolistTask=props.tasks;
+    if(props.filter=== 'Active'){
+        todolistTask=todolistTask.filter(f => f.isDone);
+        }
+    if(props.filter=== 'Completed') {
+        todolistTask = todolistTask.filter(f => f.isDone);
+    }
+
+
 
 
 
@@ -81,7 +90,7 @@ export function TodoList(props: TodoListPropsType) {
 
             </div>
             <ul>
-                {props.tasks.map((m => {
+                {todolistTask.map((m => {
                     return (
                         <li key={m.id} className={m.isDone ? "is-done" : ''}>
                             <input type="checkbox"
@@ -120,5 +129,5 @@ export function TodoList(props: TodoListPropsType) {
         </div>
 
 )
-}
+},);
 

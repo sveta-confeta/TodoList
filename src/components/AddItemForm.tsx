@@ -1,6 +1,5 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
 //import {Button} from "./Button";
-import s from "../TodoList.module.css";
 import {Button, TextField} from "@mui/material";
 
 
@@ -8,7 +7,7 @@ type AddItemFormPropsType = {
     addItem: (itemTitle: string) => void
 }
 
-export const AddItemForm: React.FC<AddItemFormPropsType> = (props) => {
+export const AddItemForm: React.FC<AddItemFormPropsType> =React.memo((props) => {
 
     const [title, setTitle] = useState<string>(''); //локальный useState для предварительного пользовательского ввода в инпут.
     //по умолчанию пустая сторока
@@ -53,7 +52,6 @@ export const AddItemForm: React.FC<AddItemFormPropsType> = (props) => {
                 error={error}
                 onChange={onChangeHandler}
                 onKeyPress={keyPress}
-                className={error ? 'error' : ''}
             />
             {/*<Input onChangeHandler={onChangeHandler} title={title}  error={error}*/}
             {/*       keyPress={keyPress}/>*/}
@@ -64,5 +62,5 @@ export const AddItemForm: React.FC<AddItemFormPropsType> = (props) => {
             {/*{error ? <div className={s.errorMessage}>Title is requires</div> : ''}*/}
         </div>
     );
-};
+}) ;
 

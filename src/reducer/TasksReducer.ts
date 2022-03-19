@@ -1,6 +1,5 @@
 import {TasksType, TaskType} from "../TodoList";
 import {v1} from "uuid";
-import {AddTodolistAcType, } from "../state/todolists-reducer";
 
 const initialState:TasksType={}
 
@@ -28,13 +27,12 @@ export const TasksReducer = (state: TasksType=initialState, action: ActionType):
         }}
         case 'CHANGE-TASK-STATUS': {
 
-            let copyState= {...state}
-            return { ...copyState,
-                [action.payload.todolistID]: state[action.payload.todolistID].map(m => m.id===action.payload.taskID ? {...m,isDone:action.payload.isDone}: m)
+
+            return { ...state, [action.payload.todolistID]: state[action.payload.todolistID].map(m => m.id===action.payload.taskID ? {...m,isDone:action.payload.isDone}: m)
         }}
 
         case 'ADD-TODOLIST':{
-            return {...state,[ v1()]:[]}; //с добавлением тудулиста добавляем в таски новый ключ с пустым массивом
+            return {...state,[action.todolistID]:[]}; //с добавлением тудулиста добавляем в таски новый ключ с пустым массивом
         }
 
         default:
@@ -42,12 +40,13 @@ export const TasksReducer = (state: TasksType=initialState, action: ActionType):
     }
 }
 
-type ActionType = RemoveTaskACType | AddTaskACType|ApdateTaskTitleACType| ChangeTaskStatusType |  AddTodolistAcType;
+type ActionType = RemoveTaskACType | AddTaskACType|ApdateTaskTitleACType| ChangeTaskStatusType |  AddTodolistACType;
 
 export type RemoveTaskACType = ReturnType<typeof RemoveTaskAC>
 export type AddTaskACType = ReturnType<typeof AddTaskAC>
 export type ApdateTaskTitleACType = ReturnType<typeof ApdateTaskTitleTaskAC>
 export type ChangeTaskStatusType= ReturnType<typeof ChangeTaskStatusAC>
+export type AddTodolistACType = ReturnType<typeof AddTodolistAC>
 
 export const RemoveTaskAC = (taskID: string, todolistID: string) => {
     return {
@@ -87,3 +86,10 @@ export const ChangeTaskStatusAC = ( taskID: string, isDone: boolean,todolistID: 
         }
     } as const
 };
+export const AddTodolistAC = (title: string) => {
+    return {
+        type: "ADD-TODOLIST",
+        title: title,
+        todolistID:v1() //создаем id для тасок и тудулистов новых
+    } as const
+}

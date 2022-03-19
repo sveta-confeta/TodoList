@@ -1,4 +1,4 @@
-import React, {useReducer} from 'react';
+import React, {useCallback, useReducer} from 'react';
 import './App.css';
 import {TasksType, TodoList} from "./TodoList";
 import {v1} from "uuid";
@@ -51,59 +51,53 @@ export function AppWhithReducer() {
 
 
     //функция-колбэк для кнопки добавления задач в инпут:
-    const addTask = (title: string, todolistID: string) => {
+    const addTask = useCallback((title: string, todolistID: string) => {
        // let todolistID=v1();
        // const copyTasks = {...tasks};
        // copyTasks[todolistID] = [{id: v1(), title: title, isDone: true}, ...tasks[todolistID]]
         dispatchTasks(AddTaskAC(title,todolistID));
-    }
+    },[dispatchTasks,AddTaskAC])
 
     // функция для кнопки удаления
-    const removeTask = (taskID: string, todolistID: string) => { //вся логика в редьюсере
+    const removeTask = useCallback ((taskID: string, todolistID: string) => { //вся логика в редьюсере
         // const copyTasks = {...tasks};
         // copyTasks[todolistID] = copyTasks[todolistID].filter(f => f.id !== taskID)
         // setTasks(copyTasks) //функция удаления которая будет привязана к кнопке и ее надо через
         // //пропс поместить в туду лист
-        dispatchTasks(RemoveTaskAC(taskID,todolistID))
-    }
-    const changeTaskStatus = (taskID: string, newIsDoneValue: boolean, todolistID: string) => {
+        dispatchTasks(RemoveTaskAC(taskID,todolistID))},[])
+    const changeTaskStatus =useCallback  ((taskID: string, newIsDoneValue: boolean, todolistID: string) => {
         // const copyTasks = {...tasks};
         // copyTasks[todolistID] = tasks[todolistID].map(t => t.id === taskID ? {...t, isDone: newIsDoneValue} : t);
         // setTasks(copyTasks);
-        dispatchTasks(ChangeTaskStatusAC(taskID,newIsDoneValue,todolistID))
-    };  // функция управления чекбоксом вкл и выкл
+        dispatchTasks(ChangeTaskStatusAC(taskID,newIsDoneValue,todolistID))},[])  // функция управления чекбоксом вкл и выкл
 
 
     //функция фильтрации кнопок: принимает значение value от кнопок
-    const filteredTask = (todolistID: string, value: filterType) => {  //принимаем от кнопки value (например'all')
+    const filteredTask = useCallback ((todolistID: string, value: filterType) => {  //принимаем от кнопки value (например'all')
        // setTodolists(todolists.map(m => todolistID === m.id ? {...m, filter: value} : m));
-        dispatchTodolists(ChangeTodolistFilterAC(todolistID,value));
-    }
+        dispatchTodolists(ChangeTodolistFilterAC(todolistID,value))},[])
 
-    const apdateTaskTitle = (todolistID: string, taskID: string, title: string) => {
+    const apdateTaskTitle = useCallback ((todolistID: string, taskID: string, title: string) => {
         //const copyTasks = {...tasks};
        // copyTasks[todolistID] = tasks[todolistID].map(t => t.id === taskID ? {...t, title: title} : t);
         //setTasks(copyTasks);  //функция которая редактирует title в тасках
-        dispatchTasks(ApdateTaskTitleTaskAC(todolistID,taskID,title));
+        dispatchTasks(ApdateTaskTitleTaskAC(todolistID,taskID,title))},[dispatchTasks,ApdateTaskTitleTaskAC])
 
-    }
-
-    const titleTodolist = (todolistID: string, title: string) => {
+    const titleTodolist =useCallback ((todolistID: string, title: string) => {
         //setTodolists(todolists.map(m => todolistID === m.id ? {...m, title: title} : m));
-        dispatchTodolists(ChangeTodolistAC(todolistID,title))
-    } //функция которая редактирует  title в тодолистах
+        dispatchTodolists(ChangeTodolistAC(todolistID,title))},[]) //функция которая редактирует  title в тодолистах
 
     //функция удаления тудулистов
-    const removeTodolist = (todolistID: string) => {
-        dispatchTodolists(RemoveTodolistAC(todolistID))
+    const removeTodolist =useCallback( (todolistID: string) => {
+        dispatchTodolists(RemoveTodolistAC(todolistID))},[])
         // dispatchTasks(RemoveTodolistAC(todolistID))
 
         // setTodolists(todolists.filter(f => f.id !== todolistID))
         // const copyTask = {...tasks}
         // delete copyTask[todolistID]
         // setTasks(copyTask);
-    }
-    const addTodolist = (titleTodolist: string) => {
+
+    const addTodolist =useCallback(  (titleTodolist: string) => {
        //  const newTodolistID = v1();
        // // setTodolists([...todolists, {id: newTodolistID, title: titleTodolist, filter: 'All'}]);
        //  dispatchTodolists(AddTodolistAC(titleTodolist,newTodolistID))
@@ -112,36 +106,19 @@ export function AppWhithReducer() {
         let action=AddTodolistAC(titleTodolist)
         dispatchTasks(action)
         dispatchTodolists( action);
-    }
+    },[dispatchTodolists,AddTodolistAC]);
 
 
-    const getTasksForRender = (filter: filterType, tasks: Array<TaskType>) => {
-        switch (filter) {
-            case 'Completed':
-                return tasks.filter(f => f.isDone)
-            case  'Active':
-                return tasks.filter(f => !f.isDone);
-            default:
-                return tasks;
-        }
-    }
 
 
     const todolistsComp = todolists.map(m => {
-        // if (m.filter === 'Active') {
-        //     tasks = tasks.filter(f => f.isDone);
-        // }
-        //
-        // if (m.filter === 'Completed') {
-        //     tasks = tasks.filter(f => !f.isDone);
-        // }
         return <Grid item>
             <Paper elevation={3} style={{padding: "10px"}}>
                 <TodoList
                     key={m.id}
                     todolistID={m.id} //если красная надо типизировать v todolist.tsx
                     title={m.title}
-                    tasks={getTasksForRender(m.filter, tasks[m.id])}
+                    tasks={tasks[m.id]}
                     removeTask={removeTask} //перебрасываем в тудулист функция удаления
                     setFilter={filteredTask} //передаем функцию и не забываем типизаровать в тудулисте
                     addTask={addTask}

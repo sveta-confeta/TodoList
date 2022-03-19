@@ -1,7 +1,6 @@
 import React, {useReducer} from 'react';
 import './App.css';
 import {TasksType, TodoList} from "./TodoList";
-import {v1} from "uuid";
 import {TaskType} from "./TodoList";
 import {AddItemForm} from "./components/AddItemForm";
 import ButtonAppBar from "./components/ButtonAppBar";
@@ -12,7 +11,6 @@ import {
     ChangeTodolistAC,
     ChangeTodolistFilterAC,
     RemoveTodolistAC,
-    todolistsReducer
 } from "./state/todolists-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./state/store";
@@ -111,15 +109,15 @@ export function AppWhithRedux() {
         // delete copyTask[todolistID]
         // setTasks(copyTask);
     }
-    const addTodolist = (titleTodolist: string) => {
+    const addTodolist = (title: string) => {
        //  const newTodolistID = v1();
        // // setTodolists([...todolists, {id: newTodolistID, title: titleTodolist, filter: 'All'}]);
        //  dispatchTodolists(AddTodolistAC(titleTodolist,newTodolistID))
         //setTasks({...tasks, [newTodolistID]: []});//для нашего тудулиста должны создать массив для хранения тасок=
         // изменяем стейт с тасками =создадим новое свой ство:пустой массив где будем храниить таски нашего тудулиста.
-        let action=AddTodolistAC(titleTodolist)
+        let action=AddTodolistAC(title)
         dispatch(action)
-        dispatch( action);
+
     }
 
 
