@@ -31,7 +31,6 @@ export const todolistsReducer = (todolists: Array<TodolistsType> = initialState,
         case 'REMOVE-TODOLIST':
             return todolists.filter(tl => tl.id !== action.id); //переносим из функции в апп только логику удаления
         case 'ADD-TODOLIST':
-            // return [...todolists, {id: newTodolistID, title: action.title, filter: 'All'}];
             return [...todolists, {id: action.todolistID, title: action.title, filter: 'All'}];
         case  'CHANGE-TODOLIST-TITLE':
             return todolists.map(m => action.id === m.id ? {...m, title: action.title} : m);

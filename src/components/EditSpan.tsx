@@ -8,7 +8,7 @@ type EditSpanPropsType={
     apdateTask:(title:string)=>void//нам нужен колбэк который подхватит новое значение инпута отредактипованную унесет его в родителя
 }
 
-export const EditSpan = (props:EditSpanPropsType) => {
+export const EditSpan = React.memo((props:EditSpanPropsType) => {
     //у титла должно быть два состояния: обычное и для редактирования. это прямое показание для создания локального стейта
     let[editMode,setEditMode]=useState<boolean>(false);
     //у нас появился инпут для редактирования тасок, а это значит нужен локстейт хранить инфу в инпуте до отправки в BLL
@@ -38,4 +38,4 @@ export const EditSpan = (props:EditSpanPropsType) => {
             ? <input onChange={onChangeHandler} value={title} autoFocus onBlur={offEditMode}/>
             : <span onDoubleClick={ onEditMode}>{props.title}</span>
     );
-};
+});

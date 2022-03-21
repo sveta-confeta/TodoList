@@ -118,7 +118,7 @@ export function AppWhithReducer() {
                     key={m.id}
                     todolistID={m.id} //если красная надо типизировать v todolist.tsx
                     title={m.title}
-                    tasks={tasks[m.id]}
+                    tasks={tasks[m.id]}//мы забрали фильтрацию в сам тудулист
                     removeTask={removeTask} //перебрасываем в тудулист функция удаления
                     setFilter={filteredTask} //передаем функцию и не забываем типизаровать в тудулисте
                     addTask={addTask}
