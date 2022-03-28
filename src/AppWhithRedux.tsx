@@ -14,6 +14,7 @@ import {
 } from "./state/todolists-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./state/store";
+import {TodoList1} from "./TodoList1";
 
 export type filterType = 'All' | 'Active' | 'Completed' //типизация фильтра для кнопок
 export type TodolistsType = {
@@ -143,20 +144,20 @@ export function AppWhithRedux() {
         // }
         return <Grid item>
             <Paper elevation={3} style={{padding: "10px"}}>
-                <TodoList
+                <TodoList1
                     key={m.id}
                     todolistID={m.id} //если красная надо типизировать v todolist.tsx
-                    title={m.title}
-                    tasks={getTasksForRender(m.filter, tasks[m.id])}
-                    removeTask={removeTask} //перебрасываем в тудулист функция удаления
-                    setFilter={filteredTask} //передаем функцию и не забываем типизаровать в тудулисте
-                    addTask={addTask}
-                    changeTaskStatus={changeTaskStatus}
-                    filter={m.filter} //для навешивания css классов кнопкам
-                    filteredTasks={filteredTask}
-                    removeTodolist={removeTodolist}
-                    apdateTaskTitle={apdateTaskTitle}
-                    titleTodolist={titleTodolist}
+                    // title={m.title}
+                    // tasks={getTasksForRender(m.filter, tasks[m.id])}
+                    // removeTask={removeTask} //перебрасываем в тудулист функция удаления
+                    // setFilter={filteredTask} //передаем функцию и не забываем типизаровать в тудулисте
+                    // addTask={addTask}
+                    // changeTaskStatus={changeTaskStatus}
+                    // filter={m.filter} //для навешивания css классов кнопкам
+                    // filteredTasks={filteredTask}
+                    // removeTodolist={removeTodolist}
+                    // apdateTaskTitle={apdateTaskTitle}
+                    // titleTodolist={titleTodolist}
                 />
             </Paper>
         </Grid>

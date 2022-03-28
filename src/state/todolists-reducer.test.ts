@@ -2,9 +2,9 @@ import {
     todolistsReducer
 } from './todolists-reducer';
 import {v1} from 'uuid';
-import {filterType, TodolistsType} from '../App';
 
 import {RemoveTodolistAC, ChangeTodolistFilterAC, AddTodolistAC, ChangeTodolistAC} from './todolists-reducer'
+import {filterType, TodolistsType} from "../AppWhithRedux";
 
 let todolistId1: string; //вынесем переменные глобально.чтоб их видели тесты
 let todolistId2: string;

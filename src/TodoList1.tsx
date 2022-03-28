@@ -3,8 +3,12 @@ import {AddItemForm} from "./components/AddItemForm";
 import {EditSpan} from "./components/EditSpan";
 import {Button, ButtonGroup, IconButton} from "@material-ui/core";
 import {Delete} from "@material-ui/icons";
-import {filterType} from "./AppWhithReducer";
+import {filterType, TodolistsType} from "./AppWhithReducer";
 import {Task} from "./components/Task";
+import {useDispatch, useSelector} from "react-redux";
+import {AppRootStateType} from "./state/store";
+import {AddTaskAC, RemoveTaskAC} from "./reducer/TasksReducer";
+import {ChangeTodolistAC, ChangeTodolistFilterAC, RemoveTodolistAC} from "./state/todolists-reducer";
 
 
 export type TaskType = {
@@ -18,52 +22,55 @@ export type TasksType = {
 
 type TodoListPropsType = {
     todolistID: string
-    title: string
-    tasks: Array<TaskType> //таски меняются из за того что их фильтр постоянно песочит
-    removeTask: (mID: string, todolistID: string) => void//функция удаления
-    setFilter: (id: string, value: filterType) => void //void-потому что функция ничего не возращает,без return
-    addTask: (title: string, todolistID: string) => void //функция добавления в инпут
-    changeTaskStatus: (id: string, newIsDoneValue: boolean, todolistID: string) => void
-    filter: filterType;
-    filteredTasks: (id: string, value: filterType,) => void
-    removeTodolist: (todolistID: string) => void
-    apdateTaskTitle: (todolistsID: string, taskID: string, title: string) => void
-    titleTodolist: (todolistsID: string, title: string) => void
 }
 
-export const TodoList = React.memo((props: TodoListPropsType) => {
+export const TodoList1 = React.memo((props: TodoListPropsType) => {
     console.log('Todolist');
 
+   let todolist=useSelector<AppRootStateType,TodolistsType>(state=> state.todolists.filter(f=>f.id ==props.todolistID)[0])
+    let tasks=useSelector<AppRootStateType,Array<TaskType>>(state=> state.tasks[props.todolistID])
+
+    const dispatch=useDispatch();
+
     const topSet = useCallback((value: filterType) => { //app.tsx:type filterType = 'All' | 'Active' | 'Completed' //типизация фильтра для кнопок
-        props.filteredTasks(props.todolistID, value);
-    }, [props.filteredTasks, props.todolistID]);
+        // props.filteredTasks(props.todolistID, value);
+        dispatch(ChangeTodolistFilterAC(props.todolistID,value));
+    }, [ props.todolistID]);
 
 
     const removeTodolist = useCallback(() => {
-        props.removeTodolist(props.todolistID)
-    }, [props.removeTodolist, props.todolistID])
+        // props.removeTodolist(props.todolistID)
+        dispatch(RemoveTodolistAC(props.todolistID))
+    }, [ props.todolistID])
 
     const addTask = useCallback((newTaskTitle: string) => {
-        props.addTask(newTaskTitle, props.todolistID)
-    }, [props])
+        // props.addTask(newTaskTitle, props.todolistID)
+        dispatch(AddTaskAC(newTaskTitle,props.todolistID));
+    }, [props.todolistID])
 
 
     const callbackTitleTodolist = useCallback((title: string) => {
-        props.titleTodolist(props.todolistID, title)
-    }, [props.titleTodolist, props.todolistID])
-    //filters
-    let todolistTask = props.tasks; //чтоб убрать лишние перерисовки у нас фильтр в каждой компоненте
-    if (props.filter === 'Active') {
-        todolistTask = todolistTask.filter(f => f.isDone);
+        // props.titleTodolist(props.todolistID, title)
+        dispatch(ChangeTodolistAC(props.todolistID,title))
+    }, [ props.todolistID])
+
+
+//filters:
+
+    if (todolist.filter === 'Active') {
+        tasks = tasks.filter(f => f.isDone);
     }
-    if (props.filter === 'Completed') {
-        todolistTask = todolistTask.filter(f => f.isDone);
+    if (todolist.filter === 'Completed') {
+        tasks = tasks.filter(f => !f.isDone);
     }
+
     //
+
+
     return (
         <div>
             {/*<h3>{props.title}</h3>*/}
-            <h3><EditSpan title={props.title} apdateTask={(title: string) => callbackTitleTodolist(title)}/></h3>
+            <h3><EditSpan title={todolist.title} apdateTask={(title: string) => callbackTitleTodolist(title)}/></h3>
             <IconButton aria-label="delete">
                 <Delete color="action" style={{cursor: 'Pointer'}} onClick={removeTodolist}/>
             </IconButton>
@@ -77,7 +84,7 @@ export const TodoList = React.memo((props: TodoListPropsType) => {
 
             </div>
             <ul>
-                {todolistTask.map((m => {
+                {tasks.map((m => {
                     return (
                         <Task key={m.id}
                               taskID={m.id}
@@ -86,7 +93,7 @@ export const TodoList = React.memo((props: TodoListPropsType) => {
                             // apdateTaskTitle={props.apdateTaskTitle}
                             // removeTask={props.removeTask}
                             // task={m}
-                    />
+                     />
 
                     )
                 }))}
@@ -95,16 +102,16 @@ export const TodoList = React.memo((props: TodoListPropsType) => {
                 <ButtonGroup variant="contained"
                              size={"small"}>
 
-                    <Button color={props.filter === 'All' ? 'secondary' : 'success'}
+                    <Button color={todolist.filter === 'All' ? 'secondary' : 'success'}
                         // className={props.filter === 'All' ? s.activeFilter : ''}
                             onClick={() => topSet('All')}>All</Button>
                     <Button
-                        color={props.filter === 'Active' ? 'secondary' : 'success'}
+                        color={todolist.filter === 'Active' ? 'secondary' : 'success'}
                         // className={props.filter === 'Active' ? s.activeFilter : ''}
                         onClick={() => topSet('Active')}> Active
                     </Button>
                     <Button
-                        color={props.filter === 'Completed' ? 'secondary' : 'success'}
+                        color={todolist.filter === 'Completed' ? 'secondary' : 'success'}
                         // className={props.filter === 'Completed' ? s.activeFilter : ''}
                         onClick={() => topSet('Completed')}>Completed
                     </Button>
