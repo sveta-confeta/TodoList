@@ -6,7 +6,6 @@ import {action} from "@storybook/addon-actions";
 export default {
   title: 'AddItemForm',
   component: AddItemForm,
-  
   argTypes: {  //то что приходит в компоненту
     addItem: {
       description:'callback' //любое описание
