@@ -2,6 +2,8 @@ import React from 'react';
 import {ComponentStory, ComponentMeta} from '@storybook/react';
 import {Task} from "../components/Task";
 import {action} from "@storybook/addon-actions";
+import {store} from "../state/store";
+import {Provider} from "react-redux";
 
 export default {   //нам нужно в тасках отрисовать 2 сосояния. чекнутые таски и нечекнутые
     title: 'Task',
@@ -13,7 +15,7 @@ export default {   //нам нужно в тасках отрисовать 2 с
 } as ComponentMeta<typeof Task>;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: ComponentStory<typeof Task> = (args) => <Task {...args} />;
+const Template: ComponentStory<typeof Task> = (args) =><Provider store={store}> <Task {...args}/> </Provider>;
 
 
 export const TaskIsDoneStory = Template.bind({});    //1 story -task isDone -true
