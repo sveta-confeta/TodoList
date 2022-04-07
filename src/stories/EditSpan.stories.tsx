@@ -16,7 +16,7 @@ export default {
 
     },
     args:{   //как вариант 3
-      value:'JS' ,
+      title:'JS' ,
     }
   },
 } as Meta;
@@ -28,6 +28,6 @@ export const EditSpanStory= Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 EditSpanStory.args = {   //история , сдесь хватит и одной: то что мы хотим увидеть:нашу форму и чтоб при нажатии срабатывал наш колбэк
   apdateTask:action(' apdateTask'),
-  //value:'JS', //как вариант 1
+  title:'JS', //cмотреть на входящие названия в компоненту
 };
 
